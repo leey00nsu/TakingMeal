@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+</head>
+<body>
+
+<form th:action="signInPro" method="post" th:object="${userDto}">
+
+  <input id="userId" type="text" name="userId" th:field="*{userId}" placeholder="아이디">
+  <br>
+
+
+  <input id="userPw" type="password" name="userPw" th:field="*{userPw}" placeholder="비밀번호">
+  <br>
+
+  <input id="userAge" type="password" name="userAge" th:field="*{userAge}" placeholder="나이">
+  <br>
+
+  <input id="userGender" type="password" name="userGender" th:field="*{userGender}" placeholder="성별">
+  <br>
+
+
+  <button type="submit">로그인</button>
+  <br>
+  <a href="/join">회원 가입</a>
+</form>
+
+</body>
+</html>
