@@ -217,12 +217,12 @@ const AddMeal: FunctionComponent<{ jumpTo: any }> = ({ jumpTo }) => {
             </View>
             <View
               style={{
-                width: "12%",
+                width: "10%",
                 alignItems: "flex-start",
                 // backgroundColor: "black",
               }}
             >
-              <Text style={styles.nutritionText}>{value["avg"]}</Text>
+              <Text style={styles.nutritionAvgText}>{value["avg"]}</Text>
             </View>
           </View>
         ))}
@@ -300,6 +300,14 @@ const AddMeal: FunctionComponent<{ jumpTo: any }> = ({ jumpTo }) => {
               </TouchableOpacity>
             </View>
           </View>
+          <View
+            style={{
+              alignSelf: "center",
+              width: SCREEN_WIDTH - 40,
+              height: 10,
+              backgroundColor: "#F6F6F6",
+            }}
+          ></View>
           <View style={styles.downcalBox}>
             <View style={styles.calStack}>
               <Text style={styles.downcalText}>1인분 당 영양성분</Text>
@@ -433,7 +441,7 @@ const styles = StyleSheet.create({
   upcalBox: {
     width: "100%",
     flexDirection: "row",
-    height: "50%",
+    height: "45%",
     alignItems: "center",
     justifyContent: "space-between",
     paddingVertical: 20,
@@ -450,7 +458,7 @@ const styles = StyleSheet.create({
   },
   downcalBox: {
     width: "100%",
-    height: "50%",
+    height: "45%",
     alignItems: "center",
     justifyContent: "space-between",
     paddingVertical: 20,
@@ -520,6 +528,11 @@ const styles = StyleSheet.create({
     fontSize: 10,
     fontFamily: "LeferiBaseRegular",
     color: "white",
+  },
+  nutritionAvgText: {
+    fontSize: 10,
+    fontFamily: "LeferiBaseRegular",
+    color: "#A4A4A4",
   },
   borderLine: {
     borderBottomWidth: 1,
