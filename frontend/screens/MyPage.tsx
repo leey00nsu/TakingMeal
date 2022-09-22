@@ -14,6 +14,7 @@ import {
   View,
   Dimensions,
   ScrollView,
+  Image,
 } from "react-native";
 import FontAwesomeIcon5 from "react-native-vector-icons/FontAwesome5";
 import FontAwesomeIcon from "react-native-vector-icons/FontAwesome";
@@ -481,25 +482,31 @@ const MyPage: FunctionComponent<{ jumpTo: any }> = ({ jumpTo }) => {
           <View style={styles.userBox}>
             <View style={styles.userIcon}>
               {user.userAge == "초등학교" ? (
-                <WithLocalSvg
-                  width={30}
-                  height={30}
-                  fill={"#000000"}
-                  asset={require("../img/low-user.svg")}
+                <Image
+                  style={{
+                    width: "70%",
+                    height: "70%",
+                    resizeMode: "contain",
+                  }}
+                  source={require("../img/low-user.png")}
                 />
               ) : user.userAge == "중학교" ? (
-                <WithLocalSvg
-                  width={30}
-                  height={30}
-                  fill={"#000000"}
-                  asset={require("../img/mid-user.svg")}
+                <Image
+                  style={{
+                    width: "70%",
+                    height: "70%",
+                    resizeMode: "contain",
+                  }}
+                  source={require("../img/mid-user.png")}
                 />
               ) : (
-                <WithLocalSvg
-                  width={30}
-                  height={30}
-                  fill={"#000000"}
-                  asset={require("../img/high-user.svg")}
+                <Image
+                  style={{
+                    width: "70%",
+                    height: "70%",
+                    resizeMode: "contain",
+                  }}
+                  source={require("../img/high-user.png")}
                 />
               )}
 

@@ -226,7 +226,7 @@ const MyInformation: FunctionComponent<{ jumpTo: any }> = ({ jumpTo }) => {
           onPress={() => {
             setInformation();
             showToast();
-            // jumpTo("second");
+            jumpTo("second");
           }}
           style={{
             marginTop: "auto",

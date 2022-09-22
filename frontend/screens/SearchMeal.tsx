@@ -14,6 +14,7 @@ import {
   View,
   Dimensions,
   ScrollView,
+  Keyboard,
 } from "react-native";
 import FontAwesomeIcon5 from "react-native-vector-icons/FontAwesome5";
 import FontAwesomeIcon from "react-native-vector-icons/FontAwesome";
@@ -33,6 +34,7 @@ const SearchMeal: FunctionComponent<{ jumpTo: any }> = ({ jumpTo }) => {
 
   //검색 버튼을 누르면 실행됩니다.
   const onSearch = () => {
+    Keyboard.dismiss();
     if (search == "") {
       setResultList([]);
     } else {
