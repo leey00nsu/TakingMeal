@@ -69,14 +69,22 @@ const AddMeal: FunctionComponent<{ jumpTo: any }> = ({ jumpTo }) => {
     // 정리된 영양소를 차트형식에 맞게 바꿈
     let tempMealInfo = myDiet[filter][0];
     let tempNutrition: any = [
-      { nutrition: "칼로리", value: tempMealInfo.cal * count, avg: 2000 },
+      {
+        nutrition: "칼로리",
+        value: tempMealInfo.cal * count,
+        avg: user.avgCal,
+      },
       {
         nutrition: "탄수화물",
         value: tempMealInfo.carbohydrate * count,
-        avg: 500,
+        avg: user.avgCarbon,
       },
-      { nutrition: "단백질", value: tempMealInfo.protein * count, avg: 600 },
-      { nutrition: "지방", value: tempMealInfo.fat * count, avg: 700 },
+      {
+        nutrition: "단백질",
+        value: tempMealInfo.protein * count,
+        avg: user.avgProtein,
+      },
+      { nutrition: "지방", value: tempMealInfo.fat * count, avg: user.avgFat },
     ];
     setNutrition(tempNutrition);
     // 비율을 구합니다.

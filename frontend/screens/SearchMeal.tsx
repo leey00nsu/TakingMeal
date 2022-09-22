@@ -50,6 +50,7 @@ const SearchMeal: FunctionComponent<{ jumpTo: any }> = ({ jumpTo }) => {
         })
         .catch((error) => {
           console.log(error);
+          setResultList([]);
         });
     }
   };
@@ -99,7 +100,7 @@ const SearchMeal: FunctionComponent<{ jumpTo: any }> = ({ jumpTo }) => {
             key={index}
           >
             <View style={styles.searchList}>
-              <View style={{ width: "60%"}}>
+              <View style={{ width: "60%" }}>
                 <Text
                   numberOfLines={1}
                   ellipsizeMode="tail"

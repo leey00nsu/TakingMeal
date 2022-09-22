@@ -10,7 +10,7 @@ import Toast from "@zellosoft.com/react-native-toast-message";
 import { shallowEqual, useSelector } from "react-redux";
 import store from "./redux/store";
 import Login from "./screens/Login";
-
+import { BaseToast } from "@zellosoft.com/react-native-toast-message";
 const App = () => {
   const userId = useSelector((store: Store) => {
     return store.user.userId;
@@ -33,6 +33,25 @@ const App = () => {
     myInformation: MyInformation,
   });
 
+  const toastConfig = {
+    /* 
+      overwrite 'success' type, 
+      modifying the existing `BaseToast` component
+    */
+    success: ({ title, props, ...rest }: any) => (
+      <BaseToast
+        {...rest}
+        style={{ borderLeftColor: "#5AC9BC" }}
+        contentContainerStyle={{ paddingHorizontal: 15 }}
+        messageStyle={{
+          fontFamily: "LeferiBaseRegular",
+          color: "black",
+          fontSize: 15,
+        }}
+      />
+    ),
+  };
+
   return (
     <>
       {userId ? (
@@ -50,7 +69,7 @@ const App = () => {
               index === 0 ? setSwipe(false) : setSwipe(false);
             }}
           />
-          <Toast ref={(ref) => Toast.setRef(ref)} />
+          <Toast config={toastConfig} ref={(ref) => Toast.setRef(ref)} />
         </>
       ) : (
         <Login />

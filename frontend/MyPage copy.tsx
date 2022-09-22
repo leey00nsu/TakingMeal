@@ -27,7 +27,7 @@ import {
   MyDiets,
   setMealInfo,
   setMyDiets,
-} from "../redux/reducers/myDietReducer";
+} from "./redux/reducers/myDietReducer";
 
 //핸드폰 크기 가져오기
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window");
@@ -391,10 +391,9 @@ const MyPage: FunctionComponent<{ jumpTo: any }> = ({ jumpTo }) => {
   // 음식 목록을 표시합니다.
   const FoodList = () => {
     return (
-      <View style={{ width: "90%" }}>
+      <View>
         {foodList.map((value: any, index: number) => (
           <View style={styles.foodListBox} key={index}>
-            <View style={styles.foodBoxCircle}></View>
             <Text
               numberOfLines={1}
               ellipsizeMode="tail"
@@ -405,32 +404,6 @@ const MyPage: FunctionComponent<{ jumpTo: any }> = ({ jumpTo }) => {
             {/* <Text style={styles.foodServingText}>{value["serving"]}인분</Text> */}
           </View>
         ))}
-        {dateFilter == 6 ? (
-          foodList.length >= 3 ? (
-            <View style={styles.foodAddBox}>
-              <View style={styles.foodAddBoxCircle}></View>
-              <Text style={styles.foodAddText}>음식 추가하기</Text>
-              <AntDesign name="plus" color="white" size={20} />
-            </View>
-          ) : (
-            <TouchableOpacity
-              activeOpacity={0.6}
-              onPress={() => {
-                setDateFilter(7);
-                setMeal();
-                jumpTo("searchMeal");
-              }}
-            >
-              <View style={styles.foodAddBox}>
-                <View style={styles.foodAddBoxCircle}></View>
-                <Text style={styles.foodAddText}>음식 추가하기</Text>
-                <AntDesign name="plus" color="white" size={20} />
-              </View>
-            </TouchableOpacity>
-          )
-        ) : (
-          ""
-        )}
       </View>
     );
   };
@@ -503,12 +476,7 @@ const MyPage: FunctionComponent<{ jumpTo: any }> = ({ jumpTo }) => {
               </View>
             </View>
 
-            <View
-              style={{
-                justifyContent: "space-evenly",
-                height: SCREEN_HEIGHT / 15,
-              }}
-            >
+            <View>
               <Text style={styles.userTextName}>{user.userId}님,</Text>
               <Text style={styles.userText}>
                 오늘 먹은 식단을 기록해보세요.
@@ -551,18 +519,34 @@ const MyPage: FunctionComponent<{ jumpTo: any }> = ({ jumpTo }) => {
           <View style={styles.calChart}>
             {getRatio.length == 0 ? "" : <ShowChart />}
           </View>
-          {/* 펼쳤을 때 보이는 내용 */}
           {isExpanded ? (
             <View style={styles.foodBox}>
-              {foodList.length > 0 ? (
-                <View style={styles.foodBoxLine}>
-                  <View style={styles.foodBoxLineLine}></View>
-                </View>
-              ) : (
-                <View></View>
-              )}
-
+              {/* <Text>펼쳤을때 보일 내용 </Text> */}
               <FoodList />
+              {dateFilter == 6 ? (
+                foodList.length >= 3 ? (
+                  <View style={styles.foodAddBox}>
+                    <Text style={styles.foodAddText}>음식 추가하기</Text>
+                    <AntDesign name="plus" color="white" size={20} />
+                  </View>
+                ) : (
+                  <TouchableOpacity
+                    activeOpacity={0.6}
+                    onPress={() => {
+                      setDateFilter(7);
+                      setMeal();
+                      jumpTo("searchMeal");
+                    }}
+                  >
+                    <View style={styles.foodAddBox}>
+                      <Text style={styles.foodAddText}>음식 추가하기</Text>
+                      <AntDesign name="plus" color="white" size={20} />
+                    </View>
+                  </TouchableOpacity>
+                )
+              ) : (
+                ""
+              )}
             </View>
           ) : (
             ""
@@ -663,12 +647,12 @@ const styles = StyleSheet.create({
     backgroundColor: "#5AC9BC",
   },
   userTextName: {
-    fontSize: 18,
+    fontSize: 20,
     fontFamily: "LeferiBaseBold",
     color: "#2A2A2A",
   },
   userText: {
-    fontSize: 14,
+    fontSize: 15,
     fontFamily: "LeferiBaseRegular",
     color: "#2A2A2A",
   },
@@ -786,50 +770,13 @@ const styles = StyleSheet.create({
     ...shadow,
   },
   foodBox: {
-    flexDirection: "row",
     width: "100%",
-    // backgroundColor: "black",
+    backgroundColor: "black",
     alignItems: "center",
-    justifyContent: "space-between",
-  },
-  foodBoxLine: {
-    width: "5%",
-    height: "100%",
-    paddingVertical: SCREEN_HEIGHT / 26,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "flex-start",
-    backgroundColor: "bl",
-  },
-  foodBoxLineLine: {
-    width: "50%",
-    height: "100%",
-    borderStyle: "dashed",
-    borderRightWidth: 1,
-    borderColor: "#5AC9BC",
-  },
-  foodBoxCircle: {
-    position: "absolute",
-    left: "-12.5%",
-    width: 15,
-    height: 15,
-    borderRadius: 15,
-    borderColor: "#5AC9BC",
-    borderWidth: 3,
-    backgroundColor: "white",
-  },
-  foodAddBoxCircle: {
-    position: "absolute",
-    left: "-12.5%",
-    width: 15,
-    height: 15,
-    borderRadius: 15,
-    borderColor: "#A4A4A4",
-    borderWidth: 3,
-    backgroundColor: "white",
   },
   foodListBox: {
-    height: SCREEN_HEIGHT / 13,
+    width: 300,
+    height: 60,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
@@ -850,7 +797,8 @@ const styles = StyleSheet.create({
     color: "#A4A4A4",
   },
   foodAddBox: {
-    height: SCREEN_HEIGHT / 13,
+    width: 300,
+    height: 60,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
