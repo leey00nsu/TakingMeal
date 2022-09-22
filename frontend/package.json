@@ -15,6 +15,7 @@
     "@react-navigation/stack": "^6.2.3",
     "@reduxjs/toolkit": "^1.8.5",
     "@types/react-native-vector-icons": "^6.4.12",
+    "@zellosoft.com/react-native-toast-message": "^1.4.11",
     "accordion-collapse-react-native": "^1.1.1",
     "axios": "^0.27.2",
     "react": "18.1.0",
@@ -30,8 +31,7 @@
     "react-native-toast-message": "^2.1.5",
     "react-native-vector-icons": "^9.2.0",
     "react-redux": "^8.0.2",
-    "redux": "^4.2.0",
-    "victory-native": "^36.6.7"
+    "redux": "^4.2.0"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",
