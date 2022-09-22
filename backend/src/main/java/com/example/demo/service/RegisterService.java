@@ -42,43 +42,33 @@ public class RegisterService {
 
     }
 
-    public ResponseMealDto foodInfo(String userId, LocalDateTime date){
+    public ResponseMealDto foodInfo(String userId, LocalDateTime date) {
 
         User user = userRepository.findByUserId(userId);
-        List<Meal> meals  = mealRepository.findMealByUser(user);
+        List<Meal> meals = mealRepository.findMealByUser(user);
         List<LocalDateTime> days = new ArrayList<>();
         List<String> foods = new ArrayList<>();
         date = date.truncatedTo(ChronoUnit.DAYS);
         days.add(meals.get(0).getMealAddTime().truncatedTo(ChronoUnit.DAYS));
-        foods.add(meals.get(0).getMealName());
-        double amount = meals.get(0).getMealAmount();
-        double cal = meals.get(0).getMealCal();
-        double car = meals.get(0).getMealCarbon();
-        double protein = meals.get(0).getMealProtein();
-        double fat = meals.get(0).getMealFat();
+        double amount = 0;
+        double cal = 0;
+        double car = 0;
+        double protein = 0;
+        double fat = 0;
 
+        for (int i = 0; i < meals.size(); i++) {
+            if (date.equals(meals.get(i).getMealAddTime().truncatedTo(ChronoUnit.DAYS))) {
 
-        for(int i = 1; i < meals.size(); i++) {
-
-            int j = i - 1;
-            if (date.equals(days.get(j).truncatedTo(ChronoUnit.DAYS))) {
-                days.add(meals.get(i).getMealAddTime().truncatedTo(ChronoUnit.DAYS));
-                if (days.get(i).equals(days.get(j))) {
-                    foods.add(meals.get(i).getMealName());
-                    amount += meals.get(i).getMealAmount();
-                    cal += meals.get(i).getMealCal();
-                    car += meals.get(i).getMealCarbon();
-                    protein += meals.get(i).getMealProtein();
-                    fat += meals.get(i).getMealFat();
-
-                }
-                System.out.println(amount);
+                foods.add(meals.get(i).getMealName());
+                amount += meals.get(i).getMealAmount();
+                cal += meals.get(i).getMealCal();
+                car += meals.get(i).getMealCarbon();
+                protein += meals.get(i).getMealProtein();
+                fat += meals.get(i).getMealFat();
+                days.add(meals.get(i).getMealAddTime());
             }
         }
-
-        ResponseMealDto responseMealDto = new ResponseMealDto(foods,amount,cal,car, protein, fat, days.get(0).truncatedTo(ChronoUnit.DAYS));
-
-        return  responseMealDto;
+        ResponseMealDto responseMealDto = new ResponseMealDto(foods, amount, cal, car, protein, fat, date);
+        return responseMealDto;
     }
-
 }

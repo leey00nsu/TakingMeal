@@ -83,6 +83,7 @@ public class MealController {
         userDate = userDate.replace("2022-09-1", "2022-09-" + date);
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
         LocalDateTime dateTime = LocalDateTime.parse(userDate, formatter);
+        System.out.println(dateTime);
         return registerService.foodInfo(userId, dateTime);
     }
 
