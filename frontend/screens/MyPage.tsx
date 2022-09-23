@@ -14,6 +14,7 @@ import {
   View,
   Dimensions,
   ScrollView,
+  Image,
 } from "react-native";
 import FontAwesomeIcon5 from "react-native-vector-icons/FontAwesome5";
 import FontAwesomeIcon from "react-native-vector-icons/FontAwesome";
@@ -76,7 +77,8 @@ const MyPage: FunctionComponent<{ jumpTo: any }> = ({ jumpTo }) => {
     if (dateFilter != 7) {
       const now = new Date(); // 현재 날짜 및 시간
       const date = now.getDate() - (6 - dateFilter);
-      //console.log(date);
+      console.log(user.userId);
+      console.log(date);
       //console.log("render access");
 
       axios
@@ -319,12 +321,12 @@ const MyPage: FunctionComponent<{ jumpTo: any }> = ({ jumpTo }) => {
             </View>
             <View
               style={{
-                width: "12%",
+                width: "10%",
                 alignItems: "flex-start",
                 // backgroundColor: "black",
               }}
             >
-              <Text style={styles.nutritionText}>{value["avg"]}</Text>
+              <Text style={styles.nutritionAvgText}>{value["avg"]}</Text>
             </View>
           </View>
         ))}
@@ -345,7 +347,12 @@ const MyPage: FunctionComponent<{ jumpTo: any }> = ({ jumpTo }) => {
             }}
             key={index}
           >
-            <View style={{ justifyContent: "space-between" }}>
+            <View
+              style={{
+                justifyContent: "space-between",
+                width: SCREEN_WIDTH / 9,
+              }}
+            >
               <View
                 style={
                   dateFilter == index
@@ -475,25 +482,31 @@ const MyPage: FunctionComponent<{ jumpTo: any }> = ({ jumpTo }) => {
           <View style={styles.userBox}>
             <View style={styles.userIcon}>
               {user.userAge == "초등학교" ? (
-                <WithLocalSvg
-                  width={30}
-                  height={30}
-                  fill={"#000000"}
-                  asset={require("../img/low-user.svg")}
+                <Image
+                  style={{
+                    width: "70%",
+                    height: "70%",
+                    resizeMode: "contain",
+                  }}
+                  source={require("../img/low-user.png")}
                 />
               ) : user.userAge == "중학교" ? (
-                <WithLocalSvg
-                  width={30}
-                  height={30}
-                  fill={"#000000"}
-                  asset={require("../img/mid-user.svg")}
+                <Image
+                  style={{
+                    width: "70%",
+                    height: "70%",
+                    resizeMode: "contain",
+                  }}
+                  source={require("../img/mid-user.png")}
                 />
               ) : (
-                <WithLocalSvg
-                  width={30}
-                  height={30}
-                  fill={"#000000"}
-                  asset={require("../img/high-user.svg")}
+                <Image
+                  style={{
+                    width: "70%",
+                    height: "70%",
+                    resizeMode: "contain",
+                  }}
+                  source={require("../img/high-user.png")}
                 />
               )}
 
@@ -552,6 +565,23 @@ const MyPage: FunctionComponent<{ jumpTo: any }> = ({ jumpTo }) => {
             {getRatio.length == 0 ? "" : <ShowChart />}
           </View>
           {/* 펼쳤을 때 보이는 내용 */}
+          {foodList.length > 0 || dateFilter == 6 ? (
+            isExpanded ? (
+              <View
+                style={{
+                  alignSelf: "center",
+                  width: SCREEN_WIDTH - 40,
+                  height: 10,
+                  backgroundColor: "#F6F6F6",
+                  marginVertical: 20,
+                }}
+              ></View>
+            ) : (
+              ""
+            )
+          ) : (
+            ""
+          )}
           {isExpanded ? (
             <View style={styles.foodBox}>
               {foodList.length > 0 ? (
@@ -568,6 +598,7 @@ const MyPage: FunctionComponent<{ jumpTo: any }> = ({ jumpTo }) => {
             ""
           )}
         </View>
+
         {/* Expanded 부분 */}
         <View style={{ alignItems: "center" }}>
           <View style={styles.expandButton}>
@@ -685,14 +716,14 @@ const styles = StyleSheet.create({
     height: "85%",
     alignItems: "center",
     justifyContent: "center",
-    paddingHorizontal: 10,
+    // paddingHorizontal: 10,
   },
   checkedDateListBox: {
     width: "100%",
     height: "85%",
     alignItems: "center",
     justifyContent: "center",
-    paddingHorizontal: 10,
+    // paddingHorizontal: 10,
     borderRadius: 20,
     backgroundColor: "#5AC9BC",
   },
@@ -760,6 +791,11 @@ const styles = StyleSheet.create({
     fontFamily: "LeferiBaseRegular",
     color: "white",
   },
+  nutritionAvgText: {
+    fontSize: 10,
+    fontFamily: "LeferiBaseRegular",
+    color: "#A4A4A4",
+  },
   dateText: {
     fontSize: 15,
     fontFamily: "LeferiBaseRegular",
@@ -789,8 +825,10 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     width: "100%",
     // backgroundColor: "black",
+    borderColor: "black",
     alignItems: "center",
     justifyContent: "space-between",
+    // marginVertical: 5,
   },
   foodBoxLine: {
     width: "5%",
