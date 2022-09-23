@@ -57,7 +57,7 @@ const LocationModal: FunctionComponent<{
   const submitHandler = useCallback(() => {
     Keyboard.dismiss()
     axios
-      .post(`http://10.0.2.2:8080/${location?.id}/comments/${userId}`, {
+      .post(`http://172.30.1.53:8080/${location?.id}/comments/${userId}`, {
         content: comment,
       })
       .then((response) => {
@@ -71,7 +71,7 @@ const LocationModal: FunctionComponent<{
 
   useEffect(() => {
     axios
-      .get(`http://10.0.2.2:8080/${location?.id}/comments`)
+      .get(`http://192.168.0.3:8080/${location?.id}/comments`)
       .then((response) => {
         setComments(response.data)
       })
@@ -97,6 +97,7 @@ const LocationModal: FunctionComponent<{
     >
       <Animated.View
         style={[styles.modal, { transform: [{ translateY: translateY }] }]}
+        
       >
         <View
           style={{
@@ -106,9 +107,7 @@ const LocationModal: FunctionComponent<{
             justifyContent: 'center',
             paddingTop: 10,
           }}
-          onTouchEnd={() => {
-            modalUp.start()
-          }}
+          
         >
           <View
             style={{
@@ -117,63 +116,80 @@ const LocationModal: FunctionComponent<{
               backgroundColor: 'lightgrey',
               borderRadius: 30,
             }}
-            onTouchEnd={() => {
-              modalUp.start()
-            }}
+            
           />
         </View>
         <View
           style={{
-            paddingHorizontal: 20,
-            paddingVertical: 20,
-            borderBottomColor: 'lightgrey',
-            borderBottomWidth: 1,
-            height: 95,
-            flexDirection: 'row',
-            justifyContent: 'space-between',
+            paddingHorizontal: 16,
           }}
+          
         >
-          <View>
-            <Text style={{ fontSize: 14, color: 'grey', marginBottom: -5 }}>
+          <View
+            style={{position: "relative", width: "100%", alignItems:"center", borderBottomColor: '#F2F2F2', paddingVertical: 20, borderBottomWidth: 1}}
+            onTouchEnd={() => {
+              modalUp.start()
+            }}
+          >
+            <Text style={{ fontSize: 16, color: '#5AC9BC', fontFamily: "LeferiBaseRegular" }}>
               {filter === 'goodInfluence' ? '선한 영향력' : '카드 가맹점'}
             </Text>
-            <Text style={{ fontSize: 30 }}>{location.name}</Text>
+            <Text style={{ fontSize: 24, marginTop: 10, fontFamily: "LeferiBaseRegular", flexShrink: 1, flexWrap: 'wrap', width: "90%", textAlign: "center" }} multiline ={true}>{location.name}</Text>
           </View>
         </View>
 
-        <View style={{ flexDirection: 'row', height: 70, padding: 20 }}>
+        <View style={{ flexDirection: 'row', paddingLeft: 10, paddingRight: 16, paddingTop: 20, paddingBottom: 20, borderBottomColor: '#F2F2F2', width: "100%", borderBottomWidth: 6, justifyContent: "space-between" }}>
           <MaterialIcon name="location-on" size={28} color="#D4D4D4" />
-          <Text style={{ fontSize: 18 }}>{location.address}</Text>
+          <Text style={{ fontSize: 16, fontFamily: "LeferiBaseRegular", width: "100%" }}>{location.address}</Text>
         </View>
 
-        <ScrollView style={{ width: '100%' }}>
-          {comments.map((comment) => {
-            return (
-              <View
-                key={comment.id}
-                style={{
-                  height: 80,
-                  width: '100%',
-                  borderBottomColor: 'black',
-                  borderBottomWidth: 1,
-                  flexDirection: 'row',
-                }}
-              >
-                <WithLocalSvg
-                  width={35}
-                  height={35}
-                  fill="#d03434"
-                  asset={require('../img/user.svg')}
-                />
-                <View>
-                  <Text>{comment.commentMessage}</Text>
-                  <Text>{new Date(comment.commentTime).getMonth()}</Text>
-                  <Text>{comment.writer}</Text>
+        <View
+        style={{paddingHorizontal: 16, paddingBottom: 80}}>
+          <View
+            style={{width: "100%", borderBottomColor: '#F2F2F2', borderBottomWidth: 1, flexDirection: "row", alignItems: "center", paddingVertical: 12}}>
+              <FontAwesomeIcon name="comments" color="#A4A4A4" size={20} />
+              <Text style={{fontSize:16, fontFamily: "LeferiBaseRegular", marginLeft: 5 }}>댓글</Text>
+            </View>
+          <ScrollView style={{ width: '100%', position: 'relative', paddingBottom: 50 }}>
+            {comments.map((comment) => {
+              return (
+                <View
+                  key={comment.id}
+                  style={{
+                    width: '100%',
+                    borderBottomColor: '#F2F2F2',
+                    borderBottomWidth: 1,
+                    flexDirection: 'row',
+                    paddingVertical: 20,
+                    position: 'relative',
+                  }}
+                >
+                  
+                  <View
+                  style={{position: 'absolute', width: '100%', top: 20}}>
+                    <View
+                    style={{ flexDirection:"row", alignItems: "center"}}>
+                      <WithLocalSvg
+                        width={35}
+                        height={35}
+                        fill="#d03434"
+                        asset={require('../img/user.svg')}
+                      />
+                      <Text style={{fontFamily: "LeferiBaseRegular", color: '#000000', marginLeft: 10}}>{comment.writer.substr(0,3)}****</Text>
+                     </View>
+                     <Text style={{fontFamily: "LeferiBaseRegular", position: 'absolute', right: 0, height: 35, lineHeight: 35}}>
+                      {`${(new Date(comment.commentTime).getMonth()+1) > 10 ? (new Date(comment.commentTime).getMonth()+1) : "0"+(new Date(comment.commentTime).getMonth()+1) }/${new Date(comment.commentTime).getDate() > 10 ? new Date(comment.commentTime).getDate() : 0 + new Date(comment.commentTime).getDate()}`}</Text>
+                    
+                    
+                    
+                  </View>
+                  <Text style={{fontFamily: "LeferiBaseRegular", paddingTop: 43}}>{comment.commentMessage}</Text>
                 </View>
-              </View>
-            )
-          })}
-        </ScrollView>
+              )
+            })}
+          </ScrollView>
+        </View>
+        
       </Animated.View>
       <View
         style={{
@@ -207,6 +223,7 @@ const LocationModal: FunctionComponent<{
             }}
             onSubmitEditing={submitHandler}
             style={{
+              fontFamily: "LeferiBaseRegular",
               width: '80%',
               fontSize: 15,
               marginHorizontal: 10,
@@ -266,7 +283,7 @@ const Map: FunctionComponent<{ jumpTo: any }> = ({ jumpTo }) => {
   }> = ({ item, index }) => {
     return (
       <TouchableOpacity
-        style={[styles.card]}
+        style={[styles.card, location === item ? {} : {backgroundColor: '#E8E8E8'}]}
         activeOpacity={0.8}
         onPress={() => {
           map.current.animateToRegion({
@@ -288,21 +305,21 @@ const Map: FunctionComponent<{ jumpTo: any }> = ({ jumpTo }) => {
           style={{ width: 70, height: 70 }}
         />
         <View style={{ marginLeft: 10 }}>
-          <Text style={{ fontSize: 14, color: '#FFC063', marginBottom: -5 }}>
+          <Text style={{ fontSize: 12, color: '#FFC063', marginBottom: -5, fontFamily: "LeferiBaseRegular" }}>
             공유 냉장고
           </Text>
-          <Text style={{ fontSize: 24, fontWeight: 'bold' }}>
+          <Text style={{ fontSize: 18, fontFamily: "LeferiBaseRegular", marginTop: 5 }}>
             {item.id}호점
           </Text>
           <View
             style={{
               flexDirection: 'row',
               alignItems: 'center',
-              marginTop: 5,
+              marginTop: 10,
             }}
           >
             <MaterialIcon name="location-on" size={16} color="#D4D4D4" />
-            <Text style={{ fontSize: 12 }}>{item.address}</Text>
+            <Text style={{ fontSize: 12, fontFamily: "LeferiBaseRegular" }}>{item.address}</Text>
           </View>
         </View>
       </TouchableOpacity>
@@ -315,7 +332,7 @@ const Map: FunctionComponent<{ jumpTo: any }> = ({ jumpTo }) => {
   }> = ({ item, index }) => {
     return (
       <TouchableOpacity
-        style={[styles.card]}
+        style={[styles.card, location === item ? {} : {backgroundColor: '#E8E8E8'}]}
         activeOpacity={0.8}
         onPress={() => {
           map.current.animateToRegion({
@@ -342,19 +359,19 @@ const Map: FunctionComponent<{ jumpTo: any }> = ({ jumpTo }) => {
           style={{ width: 70, height: 70 }}
         />
         <View style={{ marginLeft: 10 }}>
-          <Text style={{ fontSize: 14, color: '#FFC063', marginBottom: -5 }}>
+          <Text style={{ fontSize: 12, color: '#FFC063', marginBottom: -5, fontFamily: "LeferiBaseRegular" }}>
             {filter === 'goodInfluence' ? '선한 영향력' : '카드 가맹점'}
           </Text>
-          <Text style={{ fontSize: 24, fontWeight: 'bold' }}>{item.name}</Text>
+          <Text style={{ fontSize: 18, fontFamily: "LeferiBaseRegular", color: "#000000", marginTop: 7, overflow:"hidden" }}>{ ((item.name)?.length > 15) ? (((item.name)?.substring(0, 15-3)) + '...') : item.name }</Text>
           <View
             style={{
               flexDirection: 'row',
               alignItems: 'center',
-              marginTop: 5,
+              marginTop: 10,
             }}
           >
             <MaterialIcon name="location-on" size={16} color="#D4D4D4" />
-            <Text style={{ fontSize: 12 }}>{item.address}</Text>
+            <Text style={{ fontSize: 12, fontFamily: "LeferiBaseRegular", overflow:"hidden" }}>{ ((item.address)?.length > 20) ? (((item.address)?.substring(0, 20-3)) + '...') : item.address}</Text>
           </View>
         </View>
       </TouchableOpacity>
@@ -363,7 +380,7 @@ const Map: FunctionComponent<{ jumpTo: any }> = ({ jumpTo }) => {
 
   useEffect(() => {
     axios
-      .get('http://10.0.2.2:8080/loadapi')
+      .get('http://172.30.1.53:8080/loadapi')
       .then((response) => {
         dispatch(
           setLocations({
@@ -405,6 +422,7 @@ const Map: FunctionComponent<{ jumpTo: any }> = ({ jumpTo }) => {
     setSearch('')
     setResult([])
     location && setLocation(locations[filter][0])
+    locations[filter] && 
     map.current.animateToRegion({
       latitude: locations[filter][0].lat,
       longitude: locations[filter][0].lng,
@@ -461,7 +479,7 @@ const Map: FunctionComponent<{ jumpTo: any }> = ({ jumpTo }) => {
                     filter !== 'sharedRefrigerator' &&
                       list.current.scrollToIndex({
                         animated: true,
-                        index: locations[filter].findIndex((_location) => {
+                        index: result.findIndex((_location) => {
                           return location.id === _location.id
                         }),
                         viewPosition: 0.5,
@@ -500,169 +518,173 @@ const Map: FunctionComponent<{ jumpTo: any }> = ({ jumpTo }) => {
             })}
       </MapView>
 
+      <View
+      style={{position: 'absolute', width:'100%', paddingHorizontal: 16}}
+      >
       {/* Search */}
-      <Animated.View style={[styles.searchContainer, { opacity: opacity }]}>
-        <View
-          style={{
-            width: 50,
-            height: '100%',
-            backgroundColor: '#FFC063',
-            borderRadius: 12,
-            padding: 5,
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}
-        >
-          <WithLocalSvg
-            width={35}
-            height={35}
-            fill="#FFC063"
-            asset={require('../img/logo.svg')}
-          />
-        </View>
-
-        <TextInput
-          style={[styles.input]}
-          placeholder={
-            filter === 'sharedRefrigerator'
-              ? '공유 냉장고는 검색하실 수 없습니다.'
-              : filter === 'goodInfluence'
-              ? `선한 영향력 검색`
-              : `카드 가맹점 검색`
-          }
-          placeholderTextColor={
-            filter === 'sharedRefrigerator' ? 'red' : 'grey'
-          }
-          value={search}
-          editable={filter !== 'sharedRefrigerator'}
-          selectTextOnFocus={filter !== 'sharedRefrigerator'}
-          onChangeText={(text) => {
-            result.length > 0 &&
-              list.current.scrollToIndex({
-                animated: false,
-                index: 0,
-                viewPosition: 0.5,
-              })
-            setSearch(text)
-            setResult(
-              locations[filter].filter((location) => {
-                return location.name?.includes(text)
-              })
-            )
-          }}
-        />
-        <TouchableOpacity
-          style={[styles.iconContainer]}
-          activeOpacity={0.6}
-          onPress={() => {
-            Keyboard.dismiss()
-            search.length > 0 ? setSearch('') : jumpTo('second')
-          }}
-        >
-          {search.length > 0 ? (
-            <MaterialIcon name="cancel" color="lightgray" size={35} />
-          ) : (
-            <FontAwesomeIcon name="user-circle" color="lightgray" size={30} />
-          )}
-        </TouchableOpacity>
-      </Animated.View>
-
-      {/* Filter */}
-      <Animated.View style={[styles.filterContainer, { opacity: opacity }]}>
-        <TouchableOpacity
-          onPress={() => {
-            if (filter !== 'schoolLunch') {
-              setSearch('')
-              setFilter('schoolLunch')
-            }
-          }}
-          style={[
-            styles.filter,
-            filter === 'schoolLunch' && { backgroundColor: '#5AC9BC' },
-          ]}
-        >
+        <Animated.View style={[styles.searchContainer, { opacity: opacity }]}>
           <View
-            style={[
-              styles.filterIconContainer,
-              filter === 'schoolLunch'
-                ? { backgroundColor: 'white' }
-                : { backgroundColor: '#5AC9BC' },
-            ]}
+            style={{
+              width: 50,
+              height: 50,
+              backgroundColor: '#FFC063',
+              borderRadius: 12,
+              padding: 5,
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}
           >
-            <Ionicon
-              name="card"
-              color={filter === 'schoolLunch' ? '#5AC9BC' : 'white'}
-              size={15}
+            <WithLocalSvg
+              width={35}
+              height={35}
+              fill="#FFC063"
+              asset={require('../img/logo_w.svg')}
             />
           </View>
-          <Text style={[filter === 'schoolLunch' && { color: 'white' }]}>
-            카드 가맹점
-          </Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          onPress={() => {
-            if (filter !== 'goodInfluence') {
-              setSearch('')
-              setFilter('goodInfluence')
-            }
-          }}
-          style={[
-            styles.filter,
-            filter === 'goodInfluence' && { backgroundColor: '#5AC9BC' },
-          ]}
-        >
-          <View
-            style={[
-              styles.filterIconContainer,
-              filter === 'goodInfluence'
-                ? { backgroundColor: 'white' }
-                : { backgroundColor: '#5AC9BC' },
-            ]}
-          >
-            <FontAwesome5Icon
-              name="hand-holding-heart"
-              color={filter === 'goodInfluence' ? '#5AC9BC' : 'white'}
-              size={15}
-            />
-          </View>
-          <Text style={[filter === 'goodInfluence' && { color: 'white' }]}>
-            선한 영향력
-          </Text>
-        </TouchableOpacity>
 
-        <TouchableOpacity
-          onPress={() => {
-            if (filter !== 'sharedRefrigerator') {
-              setSearch('')
-              setFilter('sharedRefrigerator')
-            }
-          }}
-          style={[
-            styles.filter,
-            filter === 'sharedRefrigerator' && {
-              backgroundColor: '#5AC9BC',
-            },
-          ]}
-        >
-          <View
-            style={[
-              styles.filterIconContainer,
+          <TextInput
+            style={[styles.input]}
+            placeholder={
               filter === 'sharedRefrigerator'
-                ? { backgroundColor: 'white' }
-                : { backgroundColor: '#5AC9BC' },
+                ? '공유 냉장고는 검색하실 수 없습니다.'
+                : filter === 'goodInfluence'
+                ? `선한 영향력 검색`
+                : `카드 가맹점 검색`
+            }
+            placeholderTextColor={
+              filter === 'sharedRefrigerator' ? 'red' : 'grey'
+            }
+            value={search}
+            editable={filter !== 'sharedRefrigerator'}
+            selectTextOnFocus={filter !== 'sharedRefrigerator'}
+            onChangeText={(text) => {
+              result.length > 0 &&
+                list.current.scrollToIndex({
+                  animated: false,
+                  index: 0,
+                  viewPosition: 0.5,
+                })
+              setSearch(text)
+              setResult(
+                locations[filter].filter((location) => {
+                  return location.name?.includes(text)
+                })
+              )
+            }}
+          />
+          <TouchableOpacity
+            style={[styles.iconContainer, {width:50, height: 50}]}
+            activeOpacity={0.6}
+            onPress={() => {
+              Keyboard.dismiss()
+              search.length > 0 ? setSearch('') : jumpTo('second')
+            }}
+          >
+            {search.length > 0 ? (
+              <MaterialIcon name="cancel" color="lightgray" size={35} />
+            ) : (
+              <FontAwesomeIcon name="user-circle" color="lightgray" size={30} />
+            )}
+          </TouchableOpacity>
+        </Animated.View>
+
+        {/* Filter */}
+        <Animated.View style={[styles.filterContainer, { opacity: opacity }]}>
+          <TouchableOpacity
+            onPress={() => {
+              if (filter !== 'schoolLunch') {
+                setSearch('')
+                setFilter('schoolLunch')
+              }
+            }}
+            style={[
+              styles.filter,
+              filter === 'schoolLunch' && { backgroundColor: '#5AC9BC' },
             ]}
           >
-            <EntypoIcon
-              name="classic-computer"
-              color={filter === 'sharedRefrigerator' ? '#5AC9BC' : 'white'}
-              size={15}
-            />
-          </View>
-          <Text style={[filter === 'sharedRefrigerator' && { color: 'white' }]}>
-            공유 냉장고
-          </Text>
-        </TouchableOpacity>
-      </Animated.View>
+            <View
+              style={[
+                styles.filterIconContainer,
+                filter === 'schoolLunch'
+                  ? { backgroundColor: 'white' }
+                  : { backgroundColor: '#A4A4A4' },
+              ]}
+            >
+              <Ionicon
+                name="card"
+                color={filter === 'schoolLunch' ? '#5AC9BC' : 'white'}
+                size={15}
+              />
+            </View>
+            <Text style={[filter === 'schoolLunch' && { color: 'white' }, {fontFamily: "LeferiBaseRegular"}]}>
+              카드 가맹점
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => {
+              if (filter !== 'goodInfluence') {
+                setSearch('')
+                setFilter('goodInfluence')
+              }
+            }}
+            style={[
+              styles.filter,
+              filter === 'goodInfluence' && { backgroundColor: '#5AC9BC' },
+            ]}
+          >
+            <View
+              style={[
+                styles.filterIconContainer,
+                filter === 'goodInfluence'
+                  ? { backgroundColor: 'white' }
+                  : { backgroundColor: '#A4A4A4' },
+              ]}
+            >
+              <FontAwesome5Icon
+                name="hand-holding-heart"
+                color={filter === 'goodInfluence' ? '#5AC9BC' : 'white'}
+                size={15}
+              />
+            </View>
+            <Text style={[filter === 'goodInfluence' && { color: 'white'}, {fontFamily: "LeferiBaseRegular"}]}>
+              선한 영향력
+            </Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            onPress={() => {
+              if (filter !== 'sharedRefrigerator') {
+                setSearch('')
+                setFilter('sharedRefrigerator')
+              }
+            }}
+            style={[
+              styles.filter,
+              filter === 'sharedRefrigerator' && {
+                backgroundColor: '#5AC9BC',
+              },
+            ]}
+          >
+            <View
+              style={[
+                styles.filterIconContainer,
+                filter === 'sharedRefrigerator'
+                  ? { backgroundColor: 'white' }
+                  : { backgroundColor: '#A4A4A4' },
+              ]}
+            >
+              <EntypoIcon
+                name="classic-computer"
+                color={filter === 'sharedRefrigerator' ? '#5AC9BC' : 'white'}
+                size={15}
+              />
+            </View>
+            <Text style={[filter === 'sharedRefrigerator' && { color: 'white' }, {fontFamily: "LeferiBaseRegular"}]}>
+              공유 냉장고
+            </Text>
+          </TouchableOpacity>
+        </Animated.View>
+      </View>
 
       {/* List */}
 
@@ -718,19 +740,24 @@ const styles = StyleSheet.create({
   },
 
   searchContainer: {
-    width: 360,
+    display: 'flex',
+    width: '100%',
     height: 50,
     flexDirection: 'row',
+    flexWrap: 'nowrap',
     alignItems: 'center',
+    // justifyContent: 'space-between',
     position: 'absolute',
     top: 25,
-    left: 25,
+    left: 16,
     backgroundColor: 'white',
     borderRadius: 15,
     ...shadow,
   },
-  input: { width: 260, fontSize: 15, marginHorizontal: 5 },
+  input: { width: 250, fontSize: 15, marginHorizontal: 5, fontFamily: "LeferiBaseRegular" },
   iconContainer: {
+    position: 'absolute',
+    right: 0,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -738,17 +765,16 @@ const styles = StyleSheet.create({
   filterContainer: {
     position: 'absolute',
     top: 94,
-    left: 25,
-    height: 32,
+    left: 16,
     flexDirection: 'row',
   },
   filterIconContainer: {
     borderRadius: 90,
-    width: 25,
-    height: 25,
     justifyContent: 'center',
     alignItems: 'center',
-    marginRight: 3,
+    marginRight: 5,
+    paddingHorizontal: 4,
+    paddingVertical: 4,
   },
   filter: {
     backgroundColor: 'white',
@@ -756,9 +782,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 30,
-    marginRight: 10,
-    paddingVertical: 5,
-    paddingHorizontal: 5,
+    marginRight: 6,
+    paddingVertical: 3,
+    paddingLeft: 3,
+    paddingRight: 10,
     ...shadow,
   },
 
@@ -769,11 +796,11 @@ const styles = StyleSheet.create({
     bottom: 35,
   },
   card: {
-    width: 300,
+    width: 320,
     height: '90%',
     flexDirection: 'row',
     alignItems: 'center',
-    marginHorizontal: 18,
+    marginLeft: 16,
     padding: 15,
     borderRadius: 20,
     backgroundColor: 'white',
