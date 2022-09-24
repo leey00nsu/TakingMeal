@@ -21,5 +21,5 @@
 * **Spring Boot**
 * **Spring Data JPA**
 
-## Design
+## Designer
 * **성예지**
