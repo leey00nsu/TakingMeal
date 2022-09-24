@@ -57,7 +57,7 @@ const LocationModal: FunctionComponent<{
   const submitHandler = useCallback(() => {
     Keyboard.dismiss()
     axios
-      .post(`http://172.30.1.53:8080/${location?.id}/comments/${userId}`, {
+      .post(`http://172.30.1.23:8080/${location?.id}/comments/${userId}`, {
         content: comment,
       })
       .then((response) => {
@@ -71,7 +71,7 @@ const LocationModal: FunctionComponent<{
 
   useEffect(() => {
     axios
-      .get(`http://192.168.0.3:8080/${location?.id}/comments`)
+      .get(`http://172.30.1.23:8080/${location?.id}/comments`)
       .then((response) => {
         setComments(response.data)
       })
@@ -150,7 +150,7 @@ const LocationModal: FunctionComponent<{
               <FontAwesomeIcon name="comments" color="#A4A4A4" size={20} />
               <Text style={{fontSize:16, fontFamily: "LeferiBaseRegular", marginLeft: 5 }}>댓글</Text>
             </View>
-          <ScrollView style={{ width: '100%', position: 'relative', paddingBottom: 50 }}>
+          <ScrollView style={{ width: '100%', position: 'relative', paddingBottom: 200 }}>
             {comments.map((comment) => {
               return (
                 <View
@@ -380,7 +380,7 @@ const Map: FunctionComponent<{ jumpTo: any }> = ({ jumpTo }) => {
 
   useEffect(() => {
     axios
-      .get('http://172.30.1.53:8080/loadapi')
+      .get('http://172.30.1.23:8080/loadapi')
       .then((response) => {
         dispatch(
           setLocations({
