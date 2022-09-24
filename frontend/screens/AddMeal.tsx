@@ -5,7 +5,7 @@ import React, {
   useEffect,
   FunctionComponent,
   useMemo,
-} from 'react'
+} from "react";
 import {
   Animated,
   StyleSheet,
@@ -14,207 +14,235 @@ import {
   View,
   Dimensions,
   ScrollView,
-} from 'react-native'
-import FontAwesomeIcon5 from 'react-native-vector-icons/FontAwesome5'
-import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome'
-import MeterialIcon from 'react-native-vector-icons/MaterialIcons'
-import AntDesign from 'react-native-vector-icons/AntDesign'
-import { useDispatch, useSelector } from 'react-redux'
-import {
-  VictoryBar,
-  VictoryChart,
-  VictoryGroup,
-  VictoryTheme,
-  VictoryLabel,
-  VictoryAxis,
-  VictoryStack,
-  VictoryContainer,
-} from 'victory-native'
-import { MyDiet, MyDiets } from '../redux/reducers/myDietReducer'
-import Toast from 'react-native-toast-message'
-const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window')
+} from "react-native";
+import FontAwesomeIcon5 from "react-native-vector-icons/FontAwesome5";
+import FontAwesomeIcon from "react-native-vector-icons/FontAwesome";
+import MeterialIcon from "react-native-vector-icons/MaterialIcons";
+import AntDesign from "react-native-vector-icons/AntDesign";
+import { useDispatch, useSelector } from "react-redux";
+import axios from "axios";
+import { MyDiet, MyDiets, setMealInfo } from "../redux/reducers/myDietReducer";
+import Toast from "@zellosoft.com/react-native-toast-message";
+const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window");
 const AddMeal: FunctionComponent<{ jumpTo: any }> = ({ jumpTo }) => {
-  const myDiet = useSelector((state: MyDiets) => state.myDiets)
-  const [filter, setFilter] = useState('mealInfo')
-  const [mealInfo, setMealInfo] = useState(myDiet[filter][0])
-  const [getRatio, setGetRatio] = useState([])
-  const [nutrition, setNutrition] = useState([])
-  const [count, setCount] = useState(0)
+  const myDiet = useSelector((state: MyDiets) => state.myDiets);
+  const user = useSelector((store: Store) => {
+    return store.user;
+  });
+  const dispatch = useDispatch();
+  const [filter, setFilter] = useState("mealInfo");
+  const [getRatio, setGetRatio] = useState([]);
+  const [nutrition, setNutrition] = useState([]);
+  const [count, setCount] = useState(0);
 
-  useEffect(() => {
-    setMealInfo(myDiet[filter][0])
-  }, [myDiet])
-  useEffect(() => {
-    if (mealInfo.foodName != '') {
-      setCount(1)
+  const addMeal = () => {
+    if (count != 0) {
+      axios
+        .post("http://10.0.2.2:8080/food/register/" + user.userId, {
+          mealName: myDiet[filter][0].foodName,
+          mealAmount: myDiet[filter][0].amount,
+          mealCal: nutrition[0]["value"],
+          mealCarbon: nutrition[1]["value"],
+          mealProtein: nutrition[2]["value"],
+          mealFat: nutrition[3]["value"],
+        })
+        .then((response) => {
+          // console.log(response.data);
+          showToast();
+          clearMeal();
+          setCount(0);
+          jumpTo("second");
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     }
-  }, [mealInfo])
+  };
+  useEffect(() => {
+    if (myDiet[filter][0].foodName != "") {
+      setCount(1);
+    }
+  }, [myDiet]);
+
   useEffect(() => {
     // 영양소 정리
     // 정리된 영양소를 차트형식에 맞게 바꿈
-    let tempMealInfo = myDiet[filter][0]
+    let tempMealInfo = myDiet[filter][0];
     let tempNutrition: any = [
-      { nutrition: '지방', value: tempMealInfo.fat * count, avg: 700 },
-      { nutrition: '단백질', value: tempMealInfo.protein * count, avg: 600 },
       {
-        nutrition: '탄수화물',
-        value: tempMealInfo.carbohydrate * count,
-        avg: 500,
+        nutrition: "칼로리",
+        value: tempMealInfo.cal * count,
+        avg: user.avgCal,
       },
-      { nutrition: '칼로리', value: tempMealInfo.cal * count, avg: 2000 },
-    ]
-    setNutrition(tempNutrition)
+      {
+        nutrition: "탄수화물",
+        value: tempMealInfo.carbohydrate * count,
+        avg: user.avgCarbon,
+      },
+      {
+        nutrition: "단백질",
+        value: tempMealInfo.protein * count,
+        avg: user.avgProtein,
+      },
+      { nutrition: "지방", value: tempMealInfo.fat * count, avg: user.avgFat },
+    ];
+    setNutrition(tempNutrition);
     // 비율을 구합니다.
     let tempRatio = tempNutrition.map((nutrition: any) => {
-      let color = nutrition.value > nutrition.avg ? '#ffc163' : '#5AC9BC' // 칼로리가 초과되면 차트를 빨간색으로 표시합니다.
-      let bgcolor = nutrition.value > nutrition.avg ? '#ef9a85' : '#dfdfdf' // 칼로리가 초과되면 차트배경을 주황색으로 표시합니다.
+      let color = nutrition.value > nutrition.avg ? "#ffc163" : "#5AC9BC"; // 칼로리가 초과되면 차트를 빨간색으로 표시합니다.
+      let bgcolor = nutrition.value > nutrition.avg ? "#ef9a85" : "#dfdfdf"; // 칼로리가 초과되면 차트배경을 주황색으로 표시합니다.
       let value =
-        nutrition.value > nutrition.avg ? nutrition.value : nutrition.value
-      let status = nutrition.value > nutrition.avg ? 'over' : 'normal'
+        nutrition.value > nutrition.avg ? nutrition.value : nutrition.value;
+      let status = nutrition.value > nutrition.avg ? "over" : "normal";
       let ratio = Math.abs(
         nutrition.value > nutrition.avg
           ? (nutrition.avg / nutrition.value) * 100
           : (nutrition.value / nutrition.avg) * 100
-      )
+      );
       return {
         nutrition: nutrition.nutrition, // 영양소 이름
-        value: value, // 그래프에 표시될 값
+        value: value.toFixed(1), // 그래프에 표시될 값
         ratio: ratio, //비율
+        gapvalue: 100 - ratio,
         maxvalue: 100, // 최대비율 (100%)
         avg: nutrition.avg, // 평균 영양소 값
         color: color, // 값의 차트 색깔
         bgcolor: bgcolor, // 값의 차트 배경 색깔
         status: status,
-      }
-    })
-    setGetRatio(tempRatio)
+      };
+    });
+    setGetRatio(tempRatio);
+  }, [count]);
 
-    // 오늘로부터 일주일간의 날짜와 요일을 구합니다.
-  }, [count])
+  const clearMeal = () => {
+    dispatch(
+      setMealInfo({
+        foodName: "",
+        cal: 0,
+        carbohydrate: 0,
+        protein: 0,
+        fat: 0,
+        serving: 0,
+        status: 0,
+      })
+    );
+  };
 
-  // 해당 Bar의 중간 지점으로 라벨을 그립니다.
-  const CenteredLabel = (props: any) => {
-    const { datum, scale } = props
-    let color = ''
-    let centerPos = scale.y(datum._y)
-    // 칼로리가 초과했다면
-    if (datum.status == 'over') {
-      centerPos = scale.y(datum.maxvalue - 10) // 그래프 끝에 그림
-      color = 'white'
-    } else {
-      if (datum.ratio > 10) {
-        // 값이 텍스트를 포함할만큼의 크기이면
-        centerPos = scale.y(datum._y - 10) // 값의 끝에 그림
-        color = 'white'
-      } else {
-        // 값이 텍스트보다 작으면
-        centerPos = scale.y(10) // 그래프 처음에 그림
-        color = 'white'
-      }
-    }
-    const style = {
-      fill: color,
-      textAnchor: 'middle',
-      fontFamily: 'LeferiBaseRegular',
-      fontSize: 10,
-    }
-    // note that because your chart is horizontal,
-    // the y value that you calculate informsthe x position of the label
-    return <VictoryLabel {...props} x={centerPos} style={style} dx={0} />
-  }
-
-  // 차트를 그린다 (useMemo 사용했지만 속도향상 X)
-  const showChart = useMemo(() => {
-    const data = [
-      { quarter: 1, earnings: 13000 },
-      { quarter: 2, earnings: 16500 },
-      { quarter: 3, earnings: 14250 },
-      { quarter: 4, earnings: 19000 },
-    ]
-    return (
-      <VictoryChart
-        height={180}
-        width={300}
-        domainPadding={40}
-        padding={{ left: 60, right: 10, top: 0, bottom: 0 }}
-        horizontal
-      >
-        <VictoryAxis
-          tickValues={['지방', '단백질', '탄수화물', '칼로리']}
-          tickFormat={(value) => {
-            return value
-          }}
-          style={{
-            axis: { stroke: 'transparent' },
-
-            //ticks: { stroke: "transparent" },
-            tickLabels: {
-              textAnchor: 'start',
-              fontSize: 13,
-              padding: 60,
-              fontFamily: ({ tick }: any) =>
-                tick == '칼로리' ? 'LeferiBaseBold' : 'LeferiBaseRegular',
-              fill: '#2A2A2A',
-            },
-          }}
-        />
-        <VictoryGroup>
-          <VictoryGroup color="#dfdfdf">
-            <VictoryBar
-              style={{
-                data: {
-                  fill: ({ datum }) => datum.bgcolor,
-                },
-                labels: {
-                  fontFamily: 'LeferiBaseRegular',
-                  fontSize: 10,
-                  fill: '#A4A4A4',
-                },
-              }}
-              labels={({ datum }) => `${datum.avg}`}
-              cornerRadius={{ top: 10, bottom: 10 }}
-              barWidth={20}
-              data={getRatio}
-              x="nutrition"
-              y="maxvalue"
-            />
-          </VictoryGroup>
-        </VictoryGroup>
-        <VictoryGroup>
-          <VictoryGroup color="#45c1b0">
-            <VictoryBar
-              barWidth={20}
-              labels={({ datum }) => `${datum.value}`}
-              style={{
-                data: { fill: ({ datum }) => datum.color },
-              }}
-              labelComponent={<CenteredLabel />}
-              //verticalAnchor={"middle"}
-              cornerRadius={{
-                top: ({ datum }) => (datum.ratio >= 97 ? 0.1 * datum.ratio : 0),
-                bottom: 10,
-              }}
-              data={getRatio}
-              x="nutrition"
-              y="ratio"
-            />
-          </VictoryGroup>
-        </VictoryGroup>
-      </VictoryChart>
-    )
-  }, [getRatio])
-  // 차트 컴포넌트
+  // 차트를 그린다
   const ShowChart = () => {
-    return showChart
-  }
+    return (
+      <View
+        style={{
+          height: "100%",
+          justifyContent: "space-evenly",
+        }}
+      >
+        {getRatio.map((value: any, index: number) => (
+          <View
+            style={{
+              width: "100%",
+              flexDirection: "row",
+              marginHorizontal: 5,
+              alignItems: "center",
+              justifyContent: "space-between",
+            }}
+            key={index}
+          >
+            {value["status"] == "normal" ? (
+              <View
+                style={{
+                  position: "absolute",
+                  left: "20%",
+                  zIndex: 1,
+                }}
+              >
+                <Text style={styles.nutritionValueText}>{value["value"]}</Text>
+              </View>
+            ) : (
+              <View
+                style={{
+                  position: "absolute",
+                  right: "18%",
+                  zIndex: 1,
+                  alignContent: "flex-end",
+                }}
+              >
+                <Text style={styles.nutritionValueText}>{value["value"]}</Text>
+              </View>
+            )}
+
+            <View
+              style={{
+                width: "16%",
+                alignItems: "flex-start",
+              }}
+            >
+              <Text
+                style={
+                  value["nutrition"] == "칼로리"
+                    ? styles.nutritionBoldText
+                    : styles.nutritionText
+                }
+              >
+                {value["nutrition"]}
+              </Text>
+            </View>
+
+            <View
+              style={{
+                width: "70%",
+                flexDirection: "row",
+                borderRadius: 50,
+                backgroundColor: value["color"],
+                overflow: "hidden",
+              }}
+            >
+              <View
+                style={{
+                  width: value["ratio"] + "%",
+                  height: 20,
+                  backgroundColor: value["color"],
+                  alignItems: "flex-start",
+                  justifyContent: "center",
+                }}
+              ></View>
+              <View
+                style={{
+                  width: value["gapvalue"] + "%",
+                  height: 20,
+                  backgroundColor: value["bgcolor"],
+                  justifyContent: "center",
+                }}
+              ></View>
+            </View>
+            <View
+              style={{
+                width: "10%",
+                alignItems: "flex-start",
+                // backgroundColor: "black",
+              }}
+            >
+              <Text style={styles.nutritionAvgText}>{value["avg"]}</Text>
+            </View>
+          </View>
+        ))}
+      </View>
+    );
+  };
 
   // Toast 메세지
   const showToast = () => {
     Toast.show({
-      type: 'success',
-      text1: '식단을 추가하였습니다!',
-    })
-  }
+      type: "success",
+      message: "식단을 추가하였습니다!",
+      visibilityTime: 2000,
+      autoHide: true,
+      showLoadingIcon: true,
+      onPress: () => {
+        Toast.hide();
+      },
+    });
+  };
 
   return (
     <>
@@ -224,30 +252,39 @@ const AddMeal: FunctionComponent<{ jumpTo: any }> = ({ jumpTo }) => {
             <TouchableOpacity
               activeOpacity={0.6}
               onPress={() => {
-                setCount(0)
-                jumpTo('searchMeal')
+                setCount(0);
+                jumpTo("searchMeal");
               }}
             >
-              <FontAwesomeIcon name="arrow-left" color="white" size={40} />
+              <FontAwesomeIcon5 name="arrow-left" color="white" size={40} />
             </TouchableOpacity>
           </View>
-          <Text style={styles.headerText}>{mealInfo.foodName}</Text>
+          <View style={{ width: "60%", alignItems: "center" }}>
+            <Text
+              numberOfLines={1}
+              ellipsizeMode="tail"
+              style={styles.headerText}
+            >
+              {myDiet[filter][0].foodName}
+            </Text>
+          </View>
+
           <View style={{ width: SCREEN_HEIGHT / 15 }}></View>
         </View>
 
         <View style={styles.calBox}>
           <View style={styles.upcalBox}>
-            <View style={{ flexDirection: 'row', alignItems: 'baseline' }}>
+            <View style={{ flexDirection: "row", alignItems: "baseline" }}>
               <Text style={styles.countText}>{count} </Text>
               <Text style={styles.servingText}>(인분)</Text>
             </View>
 
-            <View style={{ flexDirection: 'row' }}>
+            <View style={{ flexDirection: "row" }}>
               <TouchableOpacity
                 activeOpacity={0.6}
                 onPress={() => {
                   if (count > 1) {
-                    setCount(count - 1)
+                    setCount(count - 1);
                   }
                 }}
               >
@@ -258,7 +295,7 @@ const AddMeal: FunctionComponent<{ jumpTo: any }> = ({ jumpTo }) => {
               <TouchableOpacity
                 activeOpacity={0.6}
                 onPress={() => {
-                  setCount(count + 1)
+                  setCount(count + 1);
                 }}
               >
                 <View style={styles.plusButton}>
@@ -267,25 +304,37 @@ const AddMeal: FunctionComponent<{ jumpTo: any }> = ({ jumpTo }) => {
               </TouchableOpacity>
             </View>
           </View>
+          <View
+            style={{
+              alignSelf: "center",
+              width: SCREEN_WIDTH - 40,
+              height: 7,
+              backgroundColor: "#F6F6F6",
+            }}
+          ></View>
           <View style={styles.downcalBox}>
             <View style={styles.calStack}>
               <Text style={styles.downcalText}>1인분 당 영양성분</Text>
-              <Text style={styles.downcalSubText}>(1인분 150g)</Text>
+              <Text style={styles.downcalSubText}>
+                (1인분 {myDiet[filter][0].amount}g)
+              </Text>
             </View>
 
             <View style={styles.calStack}>
               <View style={styles.calGap}>
                 <Text style={styles.downcalSubText}>칼로리</Text>
-                <View style={{ flexDirection: 'row' }}>
-                  <Text style={styles.downcalNumText}>{mealInfo.cal}</Text>
+                <View style={{ flexDirection: "row" }}>
+                  <Text style={styles.downcalNumText}>
+                    {myDiet[filter][0].cal}
+                  </Text>
                   <Text style={styles.downcalSubText}>kcal</Text>
                 </View>
               </View>
               <View style={styles.calGap}>
                 <Text style={styles.downcalSubText}>탄수화물</Text>
-                <View style={{ flexDirection: 'row' }}>
+                <View style={{ flexDirection: "row" }}>
                   <Text style={styles.downcalNumText}>
-                    {mealInfo.carbohydrate}
+                    {myDiet[filter][0].carbohydrate}
                   </Text>
                   <Text style={styles.downcalSubText}>g</Text>
                 </View>
@@ -295,15 +344,19 @@ const AddMeal: FunctionComponent<{ jumpTo: any }> = ({ jumpTo }) => {
             <View style={styles.calStack}>
               <View style={styles.calGap}>
                 <Text style={styles.downcalSubText}>단백질</Text>
-                <View style={{ flexDirection: 'row' }}>
-                  <Text style={styles.downcalNumText}>{mealInfo.protein}</Text>
+                <View style={{ flexDirection: "row" }}>
+                  <Text style={styles.downcalNumText}>
+                    {myDiet[filter][0].protein}
+                  </Text>
                   <Text style={styles.downcalSubText}>g</Text>
                 </View>
               </View>
               <View style={styles.calGap}>
                 <Text style={styles.downcalSubText}>지방</Text>
-                <View style={{ flexDirection: 'row' }}>
-                  <Text style={styles.downcalNumText}>{mealInfo.fat}</Text>
+                <View style={{ flexDirection: "row" }}>
+                  <Text style={styles.downcalNumText}>
+                    {myDiet[filter][0].fat}
+                  </Text>
                   <Text style={styles.downcalSubText}>g</Text>
                 </View>
               </View>
@@ -311,20 +364,23 @@ const AddMeal: FunctionComponent<{ jumpTo: any }> = ({ jumpTo }) => {
           </View>
         </View>
         <View style={styles.chartBox}>
-          <View style={{ flexDirection: 'row', marginBottom: 10 }}>
+          <View style={{ flexDirection: "row", marginBottom: 10 }}>
             <Text style={styles.chartText}>1일 권장량 대비 </Text>
             <Text style={styles.chartSubText}>음식 영양소</Text>
           </View>
           <View style={styles.borderLine}></View>
           <View style={styles.calChart}>
-            <ShowChart />
+            {getRatio.length == 0 ? "" : <ShowChart />}
           </View>
         </View>
         <TouchableOpacity
           activeOpacity={0.6}
           onPress={() => {
-            showToast()
-            jumpTo('second')
+            addMeal();
+          }}
+          style={{
+            marginTop: "auto",
+            marginBottom: SCREEN_HEIGHT / 25,
           }}
         >
           <View style={styles.addBox}>
@@ -333,11 +389,11 @@ const AddMeal: FunctionComponent<{ jumpTo: any }> = ({ jumpTo }) => {
         </TouchableOpacity>
       </View>
     </>
-  )
-}
+  );
+};
 
 const shadow = {
-  shadowColor: '#000',
+  shadowColor: "#000",
   shadowOffset: {
     width: 0,
     height: 2,
@@ -346,7 +402,7 @@ const shadow = {
   shadowRadius: 3.84,
 
   elevation: 5,
-}
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -354,142 +410,167 @@ const styles = StyleSheet.create({
     height: SCREEN_HEIGHT,
     paddingHorizontal: 20,
     paddingVertical: 20,
-    backgroundColor: '#f2f2f2',
+    backgroundColor: "#f2f2f2",
   },
   headerBox: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    width: '100%',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    width: "100%",
     height: SCREEN_HEIGHT / 10,
   },
   headerText: {
     fontSize: 16,
-    color: 'black',
-    fontFamily: 'LeferiBaseRegular',
+    color: "black",
+    fontFamily: "LeferiBaseRegular",
   },
   backButton: {
     height: SCREEN_HEIGHT / 15,
     aspectRatio: 1 / 1, // 정사각형
-    backgroundColor: '#ffc163',
+    backgroundColor: "#ffc163",
     borderRadius: 15,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
   calBox: {
-    width: '100%',
+    width: "100%",
     height: (SCREEN_HEIGHT / 10) * 3.3,
-    backgroundColor: 'white',
-    justifyContent: 'space-between',
+    backgroundColor: "white",
+    justifyContent: "space-between",
     borderRadius: 15,
     marginVertical: 10,
     paddingHorizontal: 20,
+    paddingVertical: 10,
     ...shadow,
   },
   upcalBox: {
-    width: '100%',
-    flexDirection: 'row',
-    height: '50%',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingVertical: 20,
+    width: "100%",
+    flexDirection: "row",
+    height: "40%",
+    alignItems: "center",
+    justifyContent: "space-between",
+    //backgroundColor: "black",
+    //paddingVertical: 0,
   },
   countText: {
     fontSize: 36,
-    color: '#2A2A2A',
-    fontFamily: 'LeferiBaseBold',
+    color: "#2A2A2A",
+    fontFamily: "LeferiBaseBold",
   },
   servingText: {
     fontSize: 16,
-    color: '#A4A4A4',
-    fontFamily: 'LeferiBaseRegular',
+    color: "#A4A4A4",
+    fontFamily: "LeferiBaseRegular",
   },
   downcalBox: {
-    width: '100%',
-    height: '50%',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingVertical: 20,
-    // backgroundColor: "black",
+    width: "100%",
+    height: "50%",
+    alignItems: "center",
+    justifyContent: "space-evenly",
+    //paddingVertical: 0,
+    //backgroundColor: "black",
   },
   downcalText: {
     fontSize: 14,
-    color: '#2A2A2A',
-    fontFamily: 'LeferiBaseRegular',
+    color: "#2A2A2A",
+    fontFamily: "LeferiBaseRegular",
   },
   downcalSubText: {
     fontSize: 12,
-    color: '#A4A4A4',
-    fontFamily: 'LeferiBaseRegular',
+    color: "#A4A4A4",
+    fontFamily: "LeferiBaseRegular",
   },
   downcalNumText: {
     fontSize: 12,
-    color: '#2A2A2A',
-    fontFamily: 'LeferiBaseRegular',
+    color: "#2A2A2A",
+    fontFamily: "LeferiBaseRegular",
   },
   calStack: {
-    width: '100%',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    width: "100%",
+    flexDirection: "row",
+    justifyContent: "space-between",
   },
   calGap: {
-    width: '40%',
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    width: "40%",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
   },
   chartBox: {
-    width: '100%',
+    width: "100%",
     height: (SCREEN_HEIGHT / 10) * 3.3,
-    backgroundColor: 'white',
-    justifyContent: 'space-between',
+    backgroundColor: "white",
+    justifyContent: "space-between",
     borderRadius: 15,
     marginVertical: 10,
     paddingHorizontal: 20,
-    paddingVertical: 30,
+    paddingVertical: 40,
     ...shadow,
   },
   chartText: {
     fontSize: 16,
-    color: '#2A2A2A',
-    fontFamily: 'LeferiBaseRegular',
+    color: "#2A2A2A",
+    fontFamily: "LeferiBaseRegular",
   },
   chartSubText: {
     fontSize: 16,
-    color: '#A4A4A4',
-    fontFamily: 'LeferiBaseRegular',
+    color: "#A4A4A4",
+    fontFamily: "LeferiBaseRegular",
   },
   calChart: {
-    alignItems: 'center',
+    height: (SCREEN_HEIGHT / 10) * 2,
+    alignItems: "center",
+    justifyContent: "space-evenly",
+  },
+  nutritionText: {
+    fontSize: 12,
+    fontFamily: "LeferiBaseRegular",
+    color: "#2A2A2A",
+  },
+  nutritionBoldText: {
+    fontSize: 12,
+    fontFamily: "LeferiBaseBold",
+    color: "#2A2A2A",
+  },
+  nutritionValueText: {
+    fontSize: 10,
+    fontFamily: "LeferiBaseRegular",
+    color: "white",
+  },
+  nutritionAvgText: {
+    fontSize: 10,
+    fontFamily: "LeferiBaseRegular",
+    color: "#A4A4A4",
   },
   borderLine: {
     borderBottomWidth: 1,
-    borderBottomColor: '#F2F2F2',
-    alignItems: 'center',
+    borderBottomColor: "#F2F2F2",
+    marginVertical: 10,
+    alignItems: "center",
   },
   addBox: {
-    width: '100%',
+    width: "100%",
     height: (SCREEN_HEIGHT / 10) * 0.7,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#5AC9BC',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#5AC9BC",
     borderRadius: 15,
     marginVertical: 10,
   },
   addText: {
     fontSize: 16,
-    color: 'white',
-    fontFamily: 'LeferiBaseRegular',
+    color: "white",
+    fontFamily: "LeferiBaseRegular",
   },
   plusButton: {
     width: 40,
     height: 40,
-    backgroundColor: '#FFC063',
+    backgroundColor: "#FFC063",
     borderRadius: 15,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     marginLeft: 5,
   },
-})
-export default AddMeal
+});
+export default AddMeal;

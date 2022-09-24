@@ -1,260 +1,157 @@
-import React, { useState, useRef, FunctionComponent, useMemo } from 'react'
+import React, {
+  useState,
+  useRef,
+  useCallback,
+  useEffect,
+  FunctionComponent,
+  useMemo,
+} from "react";
 import {
+  Animated,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
   Dimensions,
   ScrollView,
-} from 'react-native'
-import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome'
-import AntDesign from 'react-native-vector-icons/AntDesign'
-import { useDispatch, useSelector } from 'react-redux'
-import { setMealInfo } from '../redux/reducers/myDietReducer'
-import { TextInput } from 'react-native-gesture-handler'
-const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window')
+  Keyboard,
+} from "react-native";
+import FontAwesomeIcon5 from "react-native-vector-icons/FontAwesome5";
+import FontAwesomeIcon from "react-native-vector-icons/FontAwesome";
+import MeterialIcon from "react-native-vector-icons/MaterialIcons";
+import AntDesign from "react-native-vector-icons/AntDesign";
+import Feather from "react-native-vector-icons/Feather";
+import { useDispatch, useSelector } from "react-redux";
+import { MyDiet, MyDiets, setMealInfo } from "../redux/reducers/myDietReducer";
+import { TextInput } from "react-native-gesture-handler";
+import axios from "axios";
+const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window");
 const SearchMeal: FunctionComponent<{ jumpTo: any }> = ({ jumpTo }) => {
-  const dispatch = useDispatch()
-  const [search, setSearch] = useState('')
-  const [result, setResult] = useState('')
-  const resultList = useRef([])
-
-  // 테스트용 음식 반환 리스트입니다.
-  const tempList1: any = [
-    {
-      foodName: '피자1',
-      cal: 150,
-      carbohydrate: 11,
-      protein: 22,
-      fat: 33,
-      serving: 1,
-    },
-    {
-      foodName: '피자2',
-      cal: 150,
-      carbohydrate: 44,
-      protein: 55,
-      fat: 66,
-      serving: 2,
-    },
-    {
-      foodName: '피자3',
-      cal: 150,
-      carbohydrate: 77,
-      protein: 88,
-      fat: 99,
-      serving: 3,
-    },
-    {
-      foodName: '피자4',
-      cal: 150,
-      carbohydrate: 999,
-      protein: 999,
-      fat: 999,
-      serving: 1,
-    },
-    {
-      foodName: '피자5',
-      cal: 150,
-      carbohydrate: 999,
-      protein: 999,
-      fat: 999,
-      serving: 1,
-    },
-    {
-      foodName: '피자6',
-      cal: 150,
-      carbohydrate: 999,
-      protein: 999,
-      fat: 999,
-      serving: 1,
-    },
-    {
-      foodName: '피자7',
-      cal: 150,
-      carbohydrate: 999,
-      protein: 999,
-      fat: 999,
-      serving: 1,
-    },
-    {
-      foodName: '피자8',
-      cal: 150,
-      carbohydrate: 999,
-      protein: 999,
-      fat: 999,
-      serving: 1,
-    },
-    {
-      foodName: '피자9',
-      cal: 150,
-      carbohydrate: 999,
-      protein: 999,
-      fat: 999,
-      serving: 1,
-    },
-    {
-      foodName: '피자10',
-      cal: 150,
-      carbohydrate: 999,
-      protein: 999,
-      fat: 999,
-      serving: 1,
-    },
-  ]
-
-  const tempList2: any = [
-    {
-      foodName: '햄버거',
-      cal: 150,
-      carbohydrate: 999,
-      protein: 999,
-      fat: 999,
-      serving: 1,
-    },
-    {
-      foodName: '햄버거2',
-      cal: 150,
-      carbohydrate: 999,
-      protein: 999,
-      fat: 999,
-      serving: 1,
-    },
-    {
-      foodName: '햄버거3',
-      cal: 150,
-      carbohydrate: 999,
-      protein: 999,
-      fat: 999,
-      serving: 1,
-    },
-    {
-      foodName: '햄버거4',
-      cal: 150,
-      carbohydrate: 999,
-      protein: 999,
-      fat: 999,
-      serving: 1,
-    },
-    {
-      foodName: '햄버거5',
-      cal: 150,
-      carbohydrate: 999,
-      protein: 999,
-      fat: 999,
-      serving: 1,
-    },
-    {
-      foodName: '햄버거6',
-      cal: 150,
-      carbohydrate: 999,
-      protein: 999,
-      fat: 999,
-      serving: 1,
-    },
-    {
-      foodName: '햄버거7',
-      cal: 150,
-      carbohydrate: 999,
-      protein: 999,
-      fat: 999,
-      serving: 1,
-    },
-    {
-      foodName: '햄버거8',
-      cal: 150,
-      carbohydrate: 999,
-      protein: 999,
-      fat: 999,
-      serving: 1,
-    },
-    {
-      foodName: '햄버거9',
-      cal: 150,
-      carbohydrate: 999,
-      protein: 999,
-      fat: 999,
-      serving: 1,
-    },
-    {
-      foodName: '햄버거10',
-      cal: 150,
-      carbohydrate: 999,
-      protein: 999,
-      fat: 999,
-      serving: 1,
-    },
-  ]
-
-  const tempList3: any = []
+  const dispatch = useDispatch();
+  const [search, setSearch] = useState("");
+  const [result, setResult] = useState("");
+  const [resultList, setResultList] = useState([]);
 
   //검색 버튼을 누르면 실행됩니다.
   const onSearch = () => {
-    setResult(search)
-  }
+    Keyboard.dismiss();
+    // console.log("search");
+
+    if (search == "") {
+      setResultList([]);
+    } else {
+      axios
+        .get("http://10.0.2.2:8080/food/search?foodName=" + search)
+        .then((response) => {
+          // console.log(response.data[0]);
+          let tempList: any = [];
+          response.data.map((value: any, index: any) => {
+            if (index < 10) {
+              tempList.push(value);
+            }
+          });
+          setResultList(tempList);
+        })
+        .catch((error) => {
+          console.log(error);
+          setResultList([]);
+        });
+    }
+  };
 
   const setMeal = (value: any) => {
+    //console.log(value["mealCarbon"].toFixed(1));
     dispatch(
       setMealInfo({
-        foodName: value['foodName'],
-        cal: value['cal'],
-        carbohydrate: value['carbohydrate'],
-        protein: value['protein'],
-        fat: value['fat'],
-        serving: value['serving'],
+        foodName: value["mealName"],
+        cal: value["mealCal"].toFixed(1),
+        carbohydrate: value["mealCarbon"].toFixed(1),
+        protein: value["mealProtein"].toFixed(1),
+        fat: value["mealFat"].toFixed(1),
+        amount: value["mealAmount"],
+        serving: 1,
+        status: 1,
       })
-    )
-  }
+    );
+  };
 
-  // 테스트용 검색어 코드입니다.
-  if (result == '피자') {
-    resultList.current = tempList1
-  } else if (result == '햄버거') {
-    resultList.current = tempList2
-  } else {
-    resultList.current = tempList3
-  }
+  const clearMeal = () => {
+    dispatch(
+      setMealInfo({
+        foodName: "",
+        cal: 0,
+        carbohydrate: 0,
+        protein: 0,
+        fat: 0,
+        serving: 0,
+        status: 0,
+      })
+    );
+  };
 
   //console.log(resultList.current.length);
 
   const FoodList = () => {
     return (
       <>
-        {resultList['current'].map((value: any, index: number) => (
-          <View style={styles.searchList} key={index}>
-            <View>
-              <Text style={styles.foodName}>{value['foodName']}</Text>
-              <Text style={styles.foodServing}>{value['serving']}인분</Text>
-            </View>
-            <View style={styles.addButton}>
-              <TouchableOpacity
-                activeOpacity={0.6}
-                onPress={() => {
-                  setMeal(value)
-                  jumpTo('addMeal')
-                }}
-              >
-                <AntDesign name="plus" color="white" size={20} />
-              </TouchableOpacity>
-            </View>
+        {resultList.map((value: any, index: number) => (
+          <View key={index}>
+            <TouchableOpacity
+              activeOpacity={0.6}
+              onPress={() => {
+                setMeal(value);
+                Keyboard.dismiss();
+                jumpTo("addMeal");
+              }}
+            >
+              <View style={styles.searchList}>
+                <View style={{ width: "60%" }}>
+                  <Text
+                    numberOfLines={1}
+                    ellipsizeMode="tail"
+                    style={styles.foodName}
+                  >
+                    {value["mealName"]}
+                  </Text>
+                  <Text style={styles.foodServing}>
+                    1인분 ({value["mealAmount"]}g)
+                  </Text>
+                </View>
+                <View style={{ width: "10%" }}>
+                  <View style={styles.addButton}>
+                    <AntDesign name="plus" color="white" size={20} />
+                  </View>
+                </View>
+              </View>
+            </TouchableOpacity>
+            <View
+              style={{
+                alignSelf: "center",
+                width: SCREEN_WIDTH - 40,
+                borderBottomWidth: 1,
+                borderBottomColor: "#D6D6D6",
+              }}
+            ></View>
           </View>
         ))}
       </>
-    )
-  }
+    );
+  };
 
   return (
-    <>
+    <View style={{ backgroundColor: "#f2f2f2", height: SCREEN_HEIGHT }}>
       <View style={styles.container}>
         <View style={styles.headerBox}>
           <View style={styles.backButton}>
             <TouchableOpacity
               activeOpacity={0.6}
               onPress={() => {
-                jumpTo('second')
+                clearMeal();
+                Keyboard.dismiss();
+                jumpTo("second");
               }}
             >
-              <FontAwesomeIcon name="arrow-left" color="white" size={40} />
+              <FontAwesomeIcon5 name="arrow-left" color="white" size={40} />
             </TouchableOpacity>
           </View>
           <Text style={styles.headerText}>음식추가</Text>
@@ -262,51 +159,64 @@ const SearchMeal: FunctionComponent<{ jumpTo: any }> = ({ jumpTo }) => {
         </View>
 
         <View style={styles.searchBox}>
-          <TextInput
-            style={styles.searchBar}
-            placeholder="오늘 어떤 음식을 드셨나요?"
-            value={search}
-            onSubmitEditing={() => onSearch()}
-            onChangeText={(text) => {
-              setSearch(text)
-            }}
-          />
+          <View style={{ width: "100%" }}>
+            <TextInput
+              style={styles.searchBar}
+              placeholder="오늘 어떤 음식을 드셨나요?"
+              value={search}
+              onSubmitEditing={() => onSearch()}
+              onChangeText={(text) => {
+                setSearch(text);
+              }}
+            />
+          </View>
+
           <TouchableOpacity
             activeOpacity={0.6}
             onPress={() => {
-              onSearch()
+              onSearch();
             }}
           >
             <View style={styles.searchButton}>
-              <FontAwesomeIcon name="search" color="white" size={30} />
+              <Feather name="search" color="white" size={30} />
             </View>
           </TouchableOpacity>
         </View>
       </View>
 
-      <ScrollView contentContainerStyle={styles.scrollContainer}>
-        <View style={styles.listBox}>
-          {resultList.current.length == 0 ? (
-            <View style={styles.searchIndex}>
-              <FontAwesomeIcon
-                name="cutlery"
-                color="#DCDCDC"
-                size={60}
-                style={{ marginBottom: 15 }}
-              />
-              <Text style={styles.indexText}>먹은 음식을 찾아볼까?</Text>
-            </View>
-          ) : (
-            <FoodList />
-          )}
-        </View>
-      </ScrollView>
-    </>
-  )
-}
+      <View
+        style={{
+          width: SCREEN_WIDTH,
+          height: (SCREEN_HEIGHT / 10) * 7.5,
+          backgroundColor: "white",
+          borderTopLeftRadius: 30,
+          borderTopRightRadius: 30,
+        }}
+      >
+        <ScrollView contentContainerStyle={styles.scrollContainer}>
+          <View style={styles.listBox}>
+            {resultList.length == 0 ? (
+              <View style={styles.searchIndex}>
+                <FontAwesomeIcon
+                  name="cutlery"
+                  color="#DCDCDC"
+                  size={60}
+                  style={{ marginBottom: 15 }}
+                />
+                <Text style={styles.indexText}>먹은 음식을 찾아볼까?</Text>
+              </View>
+            ) : (
+              <FoodList />
+            )}
+          </View>
+        </ScrollView>
+      </View>
+    </View>
+  );
+};
 
 const shadow = {
-  shadowColor: '#000',
+  shadowColor: "#000",
   shadowOffset: {
     width: 0,
     height: 2,
@@ -315,113 +225,111 @@ const shadow = {
   shadowRadius: 3.84,
 
   elevation: 5,
-}
+};
 
 const styles = StyleSheet.create({
   container: {
     width: SCREEN_WIDTH,
     paddingHorizontal: 20,
     paddingVertical: 20,
-    backgroundColor: '#f2f2f2',
+    backgroundColor: "#f2f2f2",
   },
   scrollContainer: {
-    width: SCREEN_WIDTH,
-    minHeight: (SCREEN_HEIGHT / 10) * 7.5,
-    backgroundColor: '#f2f2f2',
+    width: "100%",
+    minHeight: "100%",
   },
   headerBox: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    width: '100%',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    width: "100%",
     height: SCREEN_HEIGHT / 10,
   },
   headerText: {
     fontSize: 16,
-    color: 'black',
-    fontFamily: 'LeferiBaseRegular',
+    color: "black",
+    fontFamily: "LeferiBaseRegular",
   },
   backButton: {
     height: SCREEN_HEIGHT / 15,
     aspectRatio: 1 / 1, // 정사각형
-    backgroundColor: '#ffc163',
+    backgroundColor: "#ffc163",
     borderRadius: 15,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
   searchBox: {
-    width: '100%',
+    width: "100%",
     height: SCREEN_HEIGHT / 15,
-    flexDirection: 'row',
-    backgroundColor: 'white',
+    flexDirection: "row",
+    backgroundColor: "white",
     borderRadius: 15,
-    borderColor: '#D9D9D9',
+    borderColor: "#D9D9D9",
     borderWidth: 0.5,
   },
   searchBar: {
-    width: '100%',
+    width: "85%",
     paddingHorizontal: 10,
-    fontFamily: 'LeferiBaseRegular',
+    fontFamily: "LeferiBaseRegular",
+    //backgroundColor: "black",
   },
   searchButton: {
     height: SCREEN_HEIGHT / 15,
     aspectRatio: 1 / 1, // 정사각형
-    backgroundColor: '#45c1b0',
+    backgroundColor: "#45c1b0",
     borderRadius: 15,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     marginLeft: -SCREEN_HEIGHT / 15,
   },
 
   listBox: {
-    width: '100%',
-    backgroundColor: 'white',
-    borderTopLeftRadius: 30,
-    borderTopRightRadius: 30,
+    width: "100%",
+    minHeight: (SCREEN_HEIGHT / 10) * 7.5,
+
     paddingVertical: 10,
   },
 
   searchIndex: {
-    width: '100%',
-    height: '100%',
-    alignItems: 'center',
-    justifyContent: 'center',
+    width: "100%",
+    height: "100%",
+    alignItems: "center",
+    justifyContent: "center",
   },
 
   indexText: {
-    fontSize: 20,
-    color: '#A4A4A4',
-    fontFamily: 'LeferiBaseRegular',
+    fontSize: 16,
+    color: "#A4A4A4",
+    fontFamily: "LeferiBaseRegular",
   },
   searchList: {
-    marginHorizontal: 20,
+    paddingHorizontal: 20,
     paddingVertical: 20,
-    borderBottomWidth: 1,
-    borderBottomColor: '#D6D6D6',
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
   },
 
   addButton: {
     width: 30,
     height: 30,
-    backgroundColor: '#D6D6D6',
+    backgroundColor: "#D6D6D6",
     borderRadius: 50,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
 
   foodName: {
     fontSize: 16,
-    fontFamily: 'LeferiBaseRegular',
-    color: '#2A2A2A',
+    fontFamily: "LeferiBaseRegular",
+    color: "#2A2A2A",
     marginBottom: 5,
   },
   foodServing: {
     fontSize: 12,
-    fontFamily: 'LeferiBaseRegular',
-    color: '#A4A4A4',
+    fontFamily: "LeferiBaseRegular",
+    color: "#A4A4A4",
   },
-})
-export default SearchMeal
+});
+export default SearchMeal;

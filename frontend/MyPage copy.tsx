@@ -14,7 +14,6 @@ import {
   View,
   Dimensions,
   ScrollView,
-  Image,
 } from "react-native";
 import FontAwesomeIcon5 from "react-native-vector-icons/FontAwesome5";
 import FontAwesomeIcon from "react-native-vector-icons/FontAwesome";
@@ -28,7 +27,7 @@ import {
   MyDiets,
   setMealInfo,
   setMyDiets,
-} from "../redux/reducers/myDietReducer";
+} from "./redux/reducers/myDietReducer";
 
 //핸드폰 크기 가져오기
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window");
@@ -77,7 +76,6 @@ const MyPage: FunctionComponent<{ jumpTo: any }> = ({ jumpTo }) => {
     if (dateFilter != 7) {
       const now = new Date(); // 현재 날짜 및 시간
       const date = now.getDate() - (6 - dateFilter);
-      //console.log(user.userId);
       //console.log(date);
       //console.log("render access");
 
@@ -321,12 +319,12 @@ const MyPage: FunctionComponent<{ jumpTo: any }> = ({ jumpTo }) => {
             </View>
             <View
               style={{
-                width: "10%",
+                width: "12%",
                 alignItems: "flex-start",
                 // backgroundColor: "black",
               }}
             >
-              <Text style={styles.nutritionAvgText}>{value["avg"]}</Text>
+              <Text style={styles.nutritionText}>{value["avg"]}</Text>
             </View>
           </View>
         ))}
@@ -347,12 +345,7 @@ const MyPage: FunctionComponent<{ jumpTo: any }> = ({ jumpTo }) => {
             }}
             key={index}
           >
-            <View
-              style={{
-                justifyContent: "space-between",
-                width: SCREEN_WIDTH / 11,
-              }}
-            >
+            <View style={{ justifyContent: "space-between" }}>
               <View
                 style={
                   dateFilter == index
@@ -398,10 +391,9 @@ const MyPage: FunctionComponent<{ jumpTo: any }> = ({ jumpTo }) => {
   // 음식 목록을 표시합니다.
   const FoodList = () => {
     return (
-      <View style={{ width: "90%" }}>
+      <View>
         {foodList.map((value: any, index: number) => (
           <View style={styles.foodListBox} key={index}>
-            <View style={styles.foodBoxCircle}></View>
             <Text
               numberOfLines={1}
               ellipsizeMode="tail"
@@ -412,32 +404,6 @@ const MyPage: FunctionComponent<{ jumpTo: any }> = ({ jumpTo }) => {
             {/* <Text style={styles.foodServingText}>{value["serving"]}인분</Text> */}
           </View>
         ))}
-        {dateFilter == 6 ? (
-          foodList.length > 10 ? (
-            <View style={styles.disfoodAddBox}>
-              <View style={styles.foodAddBoxCircle}></View>
-              <Text style={styles.foodAddText}>음식 추가하기</Text>
-              <AntDesign name="plus" color="white" size={20} />
-            </View>
-          ) : (
-            <TouchableOpacity
-              activeOpacity={0.6}
-              onPress={() => {
-                setDateFilter(7);
-                setMeal();
-                jumpTo("searchMeal");
-              }}
-            >
-              <View style={styles.foodAddBox}>
-                <View style={styles.foodAddBoxCircle}></View>
-                <Text style={styles.foodAddText}>음식 추가하기</Text>
-                <AntDesign name="plus" color="white" size={20} />
-              </View>
-            </TouchableOpacity>
-          )
-        ) : (
-          ""
-        )}
       </View>
     );
   };
@@ -469,7 +435,7 @@ const MyPage: FunctionComponent<{ jumpTo: any }> = ({ jumpTo }) => {
               <FontAwesomeIcon5 name="arrow-left" color="white" size={40} />
             </TouchableOpacity>
           </View>
-          <Text style={styles.headerText}>나의 정보</Text>
+          <Text style={styles.headerText}>마이페이지</Text>
           <View style={{ width: SCREEN_HEIGHT / 15 }}></View>
         </View>
 
@@ -478,52 +444,44 @@ const MyPage: FunctionComponent<{ jumpTo: any }> = ({ jumpTo }) => {
           onPress={() => {
             jumpTo("myInformation");
           }}
-          style={styles.userBox}
         >
-          <View style={styles.userIcon}>
-            {user.userAge == "초등학교" ? (
-              <Image
-                style={{
-                  width: "70%",
-                  height: "70%",
-                  resizeMode: "contain",
-                }}
-                source={require("../img/low-user.png")}
-              />
-            ) : user.userAge == "중학교" ? (
-              <Image
-                style={{
-                  width: "70%",
-                  height: "70%",
-                  resizeMode: "contain",
-                }}
-                source={require("../img/mid-user.png")}
-              />
-            ) : (
-              <Image
-                style={{
-                  width: "70%",
-                  height: "70%",
-                  resizeMode: "contain",
-                }}
-                source={require("../img/high-user.png")}
-              />
-            )}
+          <View style={styles.userBox}>
+            <View style={styles.userIcon}>
+              {user.userAge == "초등학교" ? (
+                <WithLocalSvg
+                  width={30}
+                  height={30}
+                  fill={"#000000"}
+                  asset={require("../img/low-user.svg")}
+                />
+              ) : user.userAge == "중학교" ? (
+                <WithLocalSvg
+                  width={30}
+                  height={30}
+                  fill={"#000000"}
+                  asset={require("../img/mid-user.svg")}
+                />
+              ) : (
+                <WithLocalSvg
+                  width={30}
+                  height={30}
+                  fill={"#000000"}
+                  asset={require("../img/high-user.svg")}
+                />
+              )}
 
-            {/* <FontAwesomeIcon5 name="user-alt" color="white" size={30} /> */}
-            <View style={styles.userBadge}>
-              <FontAwesomeIcon5 name="pen-nib" color="white" size={15} />
+              {/* <FontAwesomeIcon5 name="user-alt" color="white" size={30} /> */}
+              <View style={styles.userBadge}>
+                <FontAwesomeIcon5 name="pen-nib" color="white" size={15} />
+              </View>
             </View>
-          </View>
 
-          <View
-            style={{
-              justifyContent: "space-evenly",
-              height: SCREEN_HEIGHT / 15,
-            }}
-          >
-            <Text style={styles.userTextName}>{user.userId}님,</Text>
-            <Text style={styles.userText}>오늘 먹은 식단을 기록해보세요.</Text>
+            <View>
+              <Text style={styles.userTextName}>{user.userId}님,</Text>
+              <Text style={styles.userText}>
+                오늘 먹은 식단을 기록해보세요.
+              </Text>
+            </View>
           </View>
         </TouchableOpacity>
 
@@ -561,41 +519,39 @@ const MyPage: FunctionComponent<{ jumpTo: any }> = ({ jumpTo }) => {
           <View style={styles.calChart}>
             {getRatio.length == 0 ? "" : <ShowChart />}
           </View>
-          {/* 펼쳤을 때 보이는 내용 */}
-          {foodList.length > 0 || dateFilter == 6 ? (
-            isExpanded ? (
-              <View
-                style={{
-                  alignSelf: "center",
-                  width: SCREEN_WIDTH - 40,
-                  height: 7,
-                  backgroundColor: "#F6F6F6",
-                  marginVertical: 20,
-                }}
-              ></View>
-            ) : (
-              ""
-            )
-          ) : (
-            ""
-          )}
           {isExpanded ? (
             <View style={styles.foodBox}>
-              {foodList.length > 0 ? (
-                <View style={styles.foodBoxLine}>
-                  <View style={styles.foodBoxLineLine}></View>
-                </View>
-              ) : (
-                <View></View>
-              )}
-
+              {/* <Text>펼쳤을때 보일 내용 </Text> */}
               <FoodList />
+              {dateFilter == 6 ? (
+                foodList.length >= 3 ? (
+                  <View style={styles.foodAddBox}>
+                    <Text style={styles.foodAddText}>음식 추가하기</Text>
+                    <AntDesign name="plus" color="white" size={20} />
+                  </View>
+                ) : (
+                  <TouchableOpacity
+                    activeOpacity={0.6}
+                    onPress={() => {
+                      setDateFilter(7);
+                      setMeal();
+                      jumpTo("searchMeal");
+                    }}
+                  >
+                    <View style={styles.foodAddBox}>
+                      <Text style={styles.foodAddText}>음식 추가하기</Text>
+                      <AntDesign name="plus" color="white" size={20} />
+                    </View>
+                  </TouchableOpacity>
+                )
+              ) : (
+                ""
+              )}
             </View>
           ) : (
             ""
           )}
         </View>
-
         {/* Expanded 부분 */}
         <View style={{ alignItems: "center" }}>
           <View style={styles.expandButton}>
@@ -660,7 +616,7 @@ const styles = StyleSheet.create({
   },
   userBox: {
     width: "100%",
-    height: SCREEN_HEIGHT / 9,
+    height: SCREEN_HEIGHT / 10,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "flex-start",
@@ -691,12 +647,12 @@ const styles = StyleSheet.create({
     backgroundColor: "#5AC9BC",
   },
   userTextName: {
-    fontSize: 18,
+    fontSize: 20,
     fontFamily: "LeferiBaseBold",
     color: "#2A2A2A",
   },
   userText: {
-    fontSize: 14,
+    fontSize: 15,
     fontFamily: "LeferiBaseRegular",
     color: "#2A2A2A",
   },
@@ -713,24 +669,24 @@ const styles = StyleSheet.create({
     height: "85%",
     alignItems: "center",
     justifyContent: "center",
-    // paddingHorizontal: 10,
+    paddingHorizontal: 10,
   },
   checkedDateListBox: {
     width: "100%",
     height: "85%",
     alignItems: "center",
     justifyContent: "center",
-    // paddingHorizontal: 10,
+    paddingHorizontal: 10,
     borderRadius: 20,
     backgroundColor: "#5AC9BC",
   },
   dateListDate: {
-    fontSize: 18,
+    fontSize: 24,
     fontFamily: "LeferiBaseRegular",
     color: "#2A2A2A",
   },
   checkedDateListDate: {
-    fontSize: 18,
+    fontSize: 24,
     fontFamily: "LeferiBaseRegular",
     color: "white",
   },
@@ -788,23 +744,18 @@ const styles = StyleSheet.create({
     fontFamily: "LeferiBaseRegular",
     color: "white",
   },
-  nutritionAvgText: {
-    fontSize: 10,
-    fontFamily: "LeferiBaseRegular",
-    color: "#A4A4A4",
-  },
   dateText: {
-    fontSize: 16,
+    fontSize: 15,
     fontFamily: "LeferiBaseRegular",
     color: "#2A2A2A",
   },
   calText: {
     fontFamily: "LeferiBaseBold",
-    fontSize: 36,
+    fontSize: 40,
     color: "#5AC9BC",
   },
   calSubText: {
-    fontSize: 16,
+    fontSize: 15,
     fontFamily: "LeferiBaseRegular",
     color: "#A4A4A4",
   },
@@ -819,52 +770,13 @@ const styles = StyleSheet.create({
     ...shadow,
   },
   foodBox: {
-    flexDirection: "row",
     width: "100%",
-    // backgroundColor: "black",
-    borderColor: "black",
+    backgroundColor: "black",
     alignItems: "center",
-    justifyContent: "space-between",
-    // marginVertical: 5,
-  },
-  foodBoxLine: {
-    width: "5%",
-    height: "100%",
-    paddingVertical: SCREEN_HEIGHT / 26,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "flex-start",
-    backgroundColor: "bl",
-  },
-  foodBoxLineLine: {
-    width: "50%",
-    height: "100%",
-    borderStyle: "dashed",
-    borderRightWidth: 1,
-    borderColor: "#5AC9BC",
-  },
-  foodBoxCircle: {
-    position: "absolute",
-    left: "-12.5%",
-    width: 15,
-    height: 15,
-    borderRadius: 15,
-    borderColor: "#5AC9BC",
-    borderWidth: 3,
-    backgroundColor: "white",
-  },
-  foodAddBoxCircle: {
-    position: "absolute",
-    left: "-12.5%",
-    width: 15,
-    height: 15,
-    borderRadius: 15,
-    borderColor: "#A4A4A4",
-    borderWidth: 3,
-    backgroundColor: "white",
   },
   foodListBox: {
-    height: SCREEN_HEIGHT / 13,
+    width: 300,
+    height: 60,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
@@ -885,18 +797,8 @@ const styles = StyleSheet.create({
     color: "#A4A4A4",
   },
   foodAddBox: {
-    height: SCREEN_HEIGHT / 13,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "#5AC9BC",
-
-    paddingHorizontal: 15,
-    borderRadius: 25,
-    marginVertical: 5,
-  },
-  disfoodAddBox: {
-    height: SCREEN_HEIGHT / 13,
+    width: 300,
+    height: 60,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
@@ -905,8 +807,19 @@ const styles = StyleSheet.create({
     borderRadius: 25,
     marginVertical: 5,
   },
+  disfoodAddBox: {
+    width: 300,
+    height: 60,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#DFDFDF",
+    paddingHorizontal: 15,
+    borderRadius: 25,
+    marginVertical: 5,
+  },
   foodAddText: {
-    fontSize: 16,
+    fontSize: 20,
     fontFamily: "LeferiBaseRegular",
     color: "white",
     marginRight: 5,
