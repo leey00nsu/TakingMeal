@@ -35,6 +35,8 @@ const SearchMeal: FunctionComponent<{ jumpTo: any }> = ({ jumpTo }) => {
   //검색 버튼을 누르면 실행됩니다.
   const onSearch = () => {
     Keyboard.dismiss();
+    // console.log("search");
+
     if (search == "") {
       setResultList([]);
     } else {
@@ -93,41 +95,51 @@ const SearchMeal: FunctionComponent<{ jumpTo: any }> = ({ jumpTo }) => {
     return (
       <>
         {resultList.map((value: any, index: number) => (
-          <TouchableOpacity
-            activeOpacity={0.6}
-            onPress={() => {
-              setMeal(value);
-              jumpTo("addMeal");
-            }}
-            key={index}
-          >
-            <View style={styles.searchList}>
-              <View style={{ width: "60%" }}>
-                <Text
-                  numberOfLines={1}
-                  ellipsizeMode="tail"
-                  style={styles.foodName}
-                >
-                  {value["mealName"]}
-                </Text>
-                <Text style={styles.foodServing}>
-                  1인분 ({value["mealAmount"]}g)
-                </Text>
-              </View>
-              <View style={{ width: "10%" }}>
-                <View style={styles.addButton}>
-                  <AntDesign name="plus" color="white" size={20} />
+          <View key={index}>
+            <TouchableOpacity
+              activeOpacity={0.6}
+              onPress={() => {
+                setMeal(value);
+                Keyboard.dismiss();
+                jumpTo("addMeal");
+              }}
+            >
+              <View style={styles.searchList}>
+                <View style={{ width: "60%" }}>
+                  <Text
+                    numberOfLines={1}
+                    ellipsizeMode="tail"
+                    style={styles.foodName}
+                  >
+                    {value["mealName"]}
+                  </Text>
+                  <Text style={styles.foodServing}>
+                    1인분 ({value["mealAmount"]}g)
+                  </Text>
+                </View>
+                <View style={{ width: "10%" }}>
+                  <View style={styles.addButton}>
+                    <AntDesign name="plus" color="white" size={20} />
+                  </View>
                 </View>
               </View>
-            </View>
-          </TouchableOpacity>
+            </TouchableOpacity>
+            <View
+              style={{
+                alignSelf: "center",
+                width: SCREEN_WIDTH - 40,
+                borderBottomWidth: 1,
+                borderBottomColor: "#D6D6D6",
+              }}
+            ></View>
+          </View>
         ))}
       </>
     );
   };
 
   return (
-    <View style={{ backgroundColor: "#f2f2f2" }}>
+    <View style={{ backgroundColor: "#f2f2f2", height: SCREEN_HEIGHT }}>
       <View style={styles.container}>
         <View style={styles.headerBox}>
           <View style={styles.backButton}>
@@ -135,6 +147,7 @@ const SearchMeal: FunctionComponent<{ jumpTo: any }> = ({ jumpTo }) => {
               activeOpacity={0.6}
               onPress={() => {
                 clearMeal();
+                Keyboard.dismiss();
                 jumpTo("second");
               }}
             >
@@ -146,15 +159,18 @@ const SearchMeal: FunctionComponent<{ jumpTo: any }> = ({ jumpTo }) => {
         </View>
 
         <View style={styles.searchBox}>
-          <TextInput
-            style={styles.searchBar}
-            placeholder="오늘 어떤 음식을 드셨나요?"
-            value={search}
-            onSubmitEditing={() => onSearch()}
-            onChangeText={(text) => {
-              setSearch(text);
-            }}
-          />
+          <View style={{ width: "100%" }}>
+            <TextInput
+              style={styles.searchBar}
+              placeholder="오늘 어떤 음식을 드셨나요?"
+              value={search}
+              onSubmitEditing={() => onSearch()}
+              onChangeText={(text) => {
+                setSearch(text);
+              }}
+            />
+          </View>
+
           <TouchableOpacity
             activeOpacity={0.6}
             onPress={() => {
@@ -168,23 +184,33 @@ const SearchMeal: FunctionComponent<{ jumpTo: any }> = ({ jumpTo }) => {
         </View>
       </View>
 
-      <ScrollView contentContainerStyle={styles.scrollContainer}>
-        <View style={styles.listBox}>
-          {resultList.length == 0 ? (
-            <View style={styles.searchIndex}>
-              <FontAwesomeIcon
-                name="cutlery"
-                color="#DCDCDC"
-                size={60}
-                style={{ marginBottom: 15 }}
-              />
-              <Text style={styles.indexText}>먹은 음식을 찾아볼까?</Text>
-            </View>
-          ) : (
-            <FoodList />
-          )}
-        </View>
-      </ScrollView>
+      <View
+        style={{
+          width: SCREEN_WIDTH,
+          height: (SCREEN_HEIGHT / 10) * 7.5,
+          backgroundColor: "white",
+          borderTopLeftRadius: 30,
+          borderTopRightRadius: 30,
+        }}
+      >
+        <ScrollView contentContainerStyle={styles.scrollContainer}>
+          <View style={styles.listBox}>
+            {resultList.length == 0 ? (
+              <View style={styles.searchIndex}>
+                <FontAwesomeIcon
+                  name="cutlery"
+                  color="#DCDCDC"
+                  size={60}
+                  style={{ marginBottom: 15 }}
+                />
+                <Text style={styles.indexText}>먹은 음식을 찾아볼까?</Text>
+              </View>
+            ) : (
+              <FoodList />
+            )}
+          </View>
+        </ScrollView>
+      </View>
     </View>
   );
 };
@@ -209,9 +235,8 @@ const styles = StyleSheet.create({
     backgroundColor: "#f2f2f2",
   },
   scrollContainer: {
-    width: SCREEN_WIDTH,
-    minHeight: (SCREEN_HEIGHT / 10) * 7.5,
-    backgroundColor: "#f2f2f2",
+    width: "100%",
+    minHeight: "100%",
   },
   headerBox: {
     flexDirection: "row",
@@ -243,9 +268,10 @@ const styles = StyleSheet.create({
     borderWidth: 0.5,
   },
   searchBar: {
-    width: "100%",
+    width: "85%",
     paddingHorizontal: 10,
     fontFamily: "LeferiBaseRegular",
+    //backgroundColor: "black",
   },
   searchButton: {
     height: SCREEN_HEIGHT / 15,
@@ -260,9 +286,7 @@ const styles = StyleSheet.create({
   listBox: {
     width: "100%",
     minHeight: (SCREEN_HEIGHT / 10) * 7.5,
-    backgroundColor: "white",
-    borderTopLeftRadius: 30,
-    borderTopRightRadius: 30,
+
     paddingVertical: 10,
   },
 
@@ -274,15 +298,14 @@ const styles = StyleSheet.create({
   },
 
   indexText: {
-    fontSize: 20,
+    fontSize: 16,
     color: "#A4A4A4",
     fontFamily: "LeferiBaseRegular",
   },
   searchList: {
-    marginHorizontal: 20,
+    paddingHorizontal: 20,
     paddingVertical: 20,
-    borderBottomWidth: 1,
-    borderBottomColor: "#D6D6D6",
+
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",

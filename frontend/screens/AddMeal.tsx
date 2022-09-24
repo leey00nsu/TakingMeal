@@ -237,6 +237,10 @@ const AddMeal: FunctionComponent<{ jumpTo: any }> = ({ jumpTo }) => {
       message: "식단을 추가하였습니다!",
       visibilityTime: 2000,
       autoHide: true,
+      showLoadingIcon: true,
+      onPress: () => {
+        Toast.hide();
+      },
     });
   };
 
@@ -304,7 +308,7 @@ const AddMeal: FunctionComponent<{ jumpTo: any }> = ({ jumpTo }) => {
             style={{
               alignSelf: "center",
               width: SCREEN_WIDTH - 40,
-              height: 10,
+              height: 7,
               backgroundColor: "#F6F6F6",
             }}
           ></View>
@@ -436,15 +440,17 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     marginVertical: 10,
     paddingHorizontal: 20,
+    paddingVertical: 10,
     ...shadow,
   },
   upcalBox: {
     width: "100%",
     flexDirection: "row",
-    height: "45%",
+    height: "40%",
     alignItems: "center",
     justifyContent: "space-between",
-    paddingVertical: 20,
+    //backgroundColor: "black",
+    //paddingVertical: 0,
   },
   countText: {
     fontSize: 36,
@@ -458,11 +464,11 @@ const styles = StyleSheet.create({
   },
   downcalBox: {
     width: "100%",
-    height: "45%",
+    height: "50%",
     alignItems: "center",
-    justifyContent: "space-between",
-    paddingVertical: 20,
-    // backgroundColor: "black",
+    justifyContent: "space-evenly",
+    //paddingVertical: 0,
+    //backgroundColor: "black",
   },
   downcalText: {
     fontSize: 14,
@@ -498,7 +504,7 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     marginVertical: 10,
     paddingHorizontal: 20,
-    paddingVertical: 30,
+    paddingVertical: 40,
     ...shadow,
   },
   chartText: {
@@ -512,7 +518,9 @@ const styles = StyleSheet.create({
     fontFamily: "LeferiBaseRegular",
   },
   calChart: {
+    height: (SCREEN_HEIGHT / 10) * 2,
     alignItems: "center",
+    justifyContent: "space-evenly",
   },
   nutritionText: {
     fontSize: 12,
@@ -537,6 +545,7 @@ const styles = StyleSheet.create({
   borderLine: {
     borderBottomWidth: 1,
     borderBottomColor: "#F2F2F2",
+    marginVertical: 10,
     alignItems: "center",
   },
   addBox: {
