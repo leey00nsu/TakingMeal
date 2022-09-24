@@ -45,6 +45,11 @@ const MyInformation: FunctionComponent<{ jumpTo: any }> = ({ jumpTo }) => {
       message: "정보를 수정하였습니다!",
       visibilityTime: 2000,
       autoHide: true,
+      showLoadingIcon: true,
+      onPress: () => {
+        // console.log("press");
+        Toast.hide();
+      },
     });
   };
 

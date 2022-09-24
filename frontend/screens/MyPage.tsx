@@ -77,8 +77,8 @@ const MyPage: FunctionComponent<{ jumpTo: any }> = ({ jumpTo }) => {
     if (dateFilter != 7) {
       const now = new Date(); // 현재 날짜 및 시간
       const date = now.getDate() - (6 - dateFilter);
-      console.log(user.userId);
-      console.log(date);
+      //console.log(user.userId);
+      //console.log(date);
       //console.log("render access");
 
       axios
@@ -350,7 +350,7 @@ const MyPage: FunctionComponent<{ jumpTo: any }> = ({ jumpTo }) => {
             <View
               style={{
                 justifyContent: "space-between",
-                width: SCREEN_WIDTH / 9,
+                width: SCREEN_WIDTH / 11,
               }}
             >
               <View
@@ -413,8 +413,8 @@ const MyPage: FunctionComponent<{ jumpTo: any }> = ({ jumpTo }) => {
           </View>
         ))}
         {dateFilter == 6 ? (
-          foodList.length >= 3 ? (
-            <View style={styles.foodAddBox}>
+          foodList.length > 10 ? (
+            <View style={styles.disfoodAddBox}>
               <View style={styles.foodAddBoxCircle}></View>
               <Text style={styles.foodAddText}>음식 추가하기</Text>
               <AntDesign name="plus" color="white" size={20} />
@@ -469,7 +469,7 @@ const MyPage: FunctionComponent<{ jumpTo: any }> = ({ jumpTo }) => {
               <FontAwesomeIcon5 name="arrow-left" color="white" size={40} />
             </TouchableOpacity>
           </View>
-          <Text style={styles.headerText}>마이페이지</Text>
+          <Text style={styles.headerText}>나의 정보</Text>
           <View style={{ width: SCREEN_HEIGHT / 15 }}></View>
         </View>
 
@@ -478,55 +478,52 @@ const MyPage: FunctionComponent<{ jumpTo: any }> = ({ jumpTo }) => {
           onPress={() => {
             jumpTo("myInformation");
           }}
+          style={styles.userBox}
         >
-          <View style={styles.userBox}>
-            <View style={styles.userIcon}>
-              {user.userAge == "초등학교" ? (
-                <Image
-                  style={{
-                    width: "70%",
-                    height: "70%",
-                    resizeMode: "contain",
-                  }}
-                  source={require("../img/low-user.png")}
-                />
-              ) : user.userAge == "중학교" ? (
-                <Image
-                  style={{
-                    width: "70%",
-                    height: "70%",
-                    resizeMode: "contain",
-                  }}
-                  source={require("../img/mid-user.png")}
-                />
-              ) : (
-                <Image
-                  style={{
-                    width: "70%",
-                    height: "70%",
-                    resizeMode: "contain",
-                  }}
-                  source={require("../img/high-user.png")}
-                />
-              )}
+          <View style={styles.userIcon}>
+            {user.userAge == "초등학교" ? (
+              <Image
+                style={{
+                  width: "70%",
+                  height: "70%",
+                  resizeMode: "contain",
+                }}
+                source={require("../img/low-user.png")}
+              />
+            ) : user.userAge == "중학교" ? (
+              <Image
+                style={{
+                  width: "70%",
+                  height: "70%",
+                  resizeMode: "contain",
+                }}
+                source={require("../img/mid-user.png")}
+              />
+            ) : (
+              <Image
+                style={{
+                  width: "70%",
+                  height: "70%",
+                  resizeMode: "contain",
+                }}
+                source={require("../img/high-user.png")}
+              />
+            )}
 
-              {/* <FontAwesomeIcon5 name="user-alt" color="white" size={30} /> */}
-              <View style={styles.userBadge}>
-                <FontAwesomeIcon5 name="pen-nib" color="white" size={15} />
-              </View>
+            {/* <FontAwesomeIcon5 name="user-alt" color="white" size={30} /> */}
+            <View style={styles.userBadge}>
+              <FontAwesomeIcon5 name="pen-nib" color="white" size={15} />
             </View>
+          </View>
 
-            <View
-              style={{
-                justifyContent: "space-evenly",
-                height: SCREEN_HEIGHT / 15,
-              }}
-            >
-              <Text style={styles.userTextName}>{user.userId}님,</Text>
-              <Text style={styles.userText}>
-                오늘 먹은 식단을 기록해보세요.
-              </Text>
-            </View>
+          <View
+            style={{
+              justifyContent: "space-evenly",
+              height: SCREEN_HEIGHT / 15,
+            }}
+          >
+            <Text style={styles.userTextName}>{user.userId}님,</Text>
+            <Text style={styles.userText}>오늘 먹은 식단을 기록해보세요.</Text>
           </View>
         </TouchableOpacity>
 
@@ -571,7 +568,7 @@ const MyPage: FunctionComponent<{ jumpTo: any }> = ({ jumpTo }) => {
                 style={{
                   alignSelf: "center",
                   width: SCREEN_WIDTH - 40,
-                  height: 10,
+                  height: 7,
                   backgroundColor: "#F6F6F6",
                   marginVertical: 20,
                 }}
@@ -663,7 +660,7 @@ const styles = StyleSheet.create({
   },
   userBox: {
     width: "100%",
-    height: SCREEN_HEIGHT / 10,
+    height: SCREEN_HEIGHT / 9,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "flex-start",
@@ -728,12 +725,12 @@ const styles = StyleSheet.create({
     backgroundColor: "#5AC9BC",
   },
   dateListDate: {
-    fontSize: 24,
+    fontSize: 18,
     fontFamily: "LeferiBaseRegular",
     color: "#2A2A2A",
   },
   checkedDateListDate: {
-    fontSize: 24,
+    fontSize: 18,
     fontFamily: "LeferiBaseRegular",
     color: "white",
   },
@@ -797,17 +794,17 @@ const styles = StyleSheet.create({
     color: "#A4A4A4",
   },
   dateText: {
-    fontSize: 15,
+    fontSize: 16,
     fontFamily: "LeferiBaseRegular",
     color: "#2A2A2A",
   },
   calText: {
     fontFamily: "LeferiBaseBold",
-    fontSize: 40,
+    fontSize: 36,
     color: "#5AC9BC",
   },
   calSubText: {
-    fontSize: 15,
+    fontSize: 16,
     fontFamily: "LeferiBaseRegular",
     color: "#A4A4A4",
   },
@@ -892,24 +889,24 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#D6D6D6",
+    backgroundColor: "#5AC9BC",
+
     paddingHorizontal: 15,
     borderRadius: 25,
     marginVertical: 5,
   },
   disfoodAddBox: {
-    width: 300,
-    height: 60,
+    height: SCREEN_HEIGHT / 13,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#DFDFDF",
+    backgroundColor: "#D6D6D6",
     paddingHorizontal: 15,
     borderRadius: 25,
     marginVertical: 5,
   },
   foodAddText: {
-    fontSize: 20,
+    fontSize: 16,
     fontFamily: "LeferiBaseRegular",
     color: "white",
     marginRight: 5,
