@@ -20,3 +20,6 @@
 ### Tech
 * **Spring Boot**
 * **Spring Data JPA**
+
+## Design
+* **성예지**
