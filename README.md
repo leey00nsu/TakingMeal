@@ -6,6 +6,10 @@
 * **정상윤**
 * **이윤수**
 
+### Designer
+* **성예지**
+
+
 ### Tech
 * **React Native**
 * **TypeScript**
@@ -20,3 +24,4 @@
 ### Tech
 * **Spring Boot**
 * **Spring Data JPA**
+
