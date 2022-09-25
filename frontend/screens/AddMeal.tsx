@@ -38,7 +38,7 @@ const AddMeal: FunctionComponent<{ jumpTo: any }> = ({ jumpTo }) => {
   const addMeal = () => {
     if (count != 0) {
       axios
-        .post("http://10.0.2.2:8080/food/register/" + user.userId, {
+        .post("http://172.30.1.43:8080/food/register/" + user.userId, {
           mealName: myDiet[filter][0].foodName,
           mealAmount: myDiet[filter][0].amount,
           mealCal: nutrition[0]["value"],

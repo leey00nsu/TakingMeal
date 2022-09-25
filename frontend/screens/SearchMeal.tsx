@@ -41,7 +41,7 @@ const SearchMeal: FunctionComponent<{ jumpTo: any }> = ({ jumpTo }) => {
       setResultList([]);
     } else {
       axios
-        .get("http://10.0.2.2:8080/food/search?foodName=" + search)
+        .get("http://172.30.1.43:8080/food/search?foodName=" + search)
         .then((response) => {
           // console.log(response.data[0]);
           let tempList: any = [];

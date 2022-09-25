@@ -57,7 +57,7 @@ const LocationModal: FunctionComponent<{
   const submitHandler = useCallback(() => {
     Keyboard.dismiss()
     axios
-      .post(`http://172.30.1.23:8080/${location?.id}/comments/${userId}`, {
+      .post(`http://172.30.1.43:8080/${location?.id}/comments/${userId}`, {
         content: comment,
       })
       .then((response) => {
@@ -71,7 +71,7 @@ const LocationModal: FunctionComponent<{
 
   useEffect(() => {
     axios
-      .get(`http://172.30.1.23:8080/${location?.id}/comments`)
+      .get(`http://172.30.1.43:8080/${location?.id}/comments`)
       .then((response) => {
         setComments(response.data)
       })
@@ -319,7 +319,7 @@ const Map: FunctionComponent<{ jumpTo: any }> = ({ jumpTo }) => {
             }}
           >
             <MaterialIcon name="location-on" size={16} color="#D4D4D4" />
-            <Text style={{ fontSize: 12, fontFamily: "LeferiBaseRegular" }}>{item.address}</Text>
+            <Text style={{ fontSize: 12, fontFamily: "LeferiBaseRegular" }}>{((item.address)?.length > 20) ? (((item.address)?.substring(0, 20-3)) + '...') : item.address}</Text>
           </View>
         </View>
       </TouchableOpacity>
@@ -380,7 +380,7 @@ const Map: FunctionComponent<{ jumpTo: any }> = ({ jumpTo }) => {
 
   useEffect(() => {
     axios
-      .get('http://172.30.1.23:8080/loadapi')
+      .get('http://172.30.1.43:8080/loadapi')
       .then((response) => {
         dispatch(
           setLocations({

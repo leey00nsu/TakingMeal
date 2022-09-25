@@ -82,7 +82,7 @@ const MyPage: FunctionComponent<{ jumpTo: any }> = ({ jumpTo }) => {
       //console.log("render access");
 
       axios
-        .get("http://10.0.2.2:8080/food/info/" + user.userId + "/" + date)
+        .get("http://172.30.1.43:8080/food/info/" + user.userId + "/" + date)
         //.get("http://10.0.2.2:8080/food/info/yoonsu/21")
         .then((response) => {
           //console.log(response.data);
