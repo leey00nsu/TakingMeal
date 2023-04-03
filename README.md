@@ -1,5 +1,5 @@
 # 밥 한끼 먹자
-> **2022 SW Contest Project**
+> **2022 SYU SW Contest Project**
 
 ## Frontend
 ### Developer
