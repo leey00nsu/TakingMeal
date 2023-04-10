@@ -1,5 +1,6 @@
-# 밥 한끼 먹자
-> **2022 SYU SW Contest Project**
+# 밥 한끼 하자
+> **2022 SYU SW Contest Project**  
+[발표자료](https://drive.google.com/file/d/1_2M-Y0kp_2tEj7TGt7-6xDy0hiPRGUjZ/view?usp=share_link)
 
 ## Frontend
 ### Developer
